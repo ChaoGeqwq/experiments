@@ -6,11 +6,15 @@ import os
 import logging
 from typing import Tuple, Optional
 import argparse
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 
-
-# 配置matplotlib中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'sans-serif']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
+
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning)
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
