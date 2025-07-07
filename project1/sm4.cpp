@@ -4,7 +4,7 @@
 
 using namespace std;
 
-// SM4 S∫–
+// SM4 SÁõí
 const uint8_t SBox[256] = {
     0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
     0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3, 0xaa, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99,
@@ -24,10 +24,10 @@ const uint8_t SBox[256] = {
     0x18, 0xf0, 0x7d, 0xec, 0x3a, 0xdc, 0x4d, 0x20, 0x79, 0xee, 0x5f, 0x3e, 0xd7, 0xcb, 0x39, 0x48
 };
 
-// FK≥£¡ø
+// FKÂ∏∏Èáè
 const uint32_t FK[4] = {0xa3b1bac6, 0x56aa3350, 0x677d9197, 0xb27022dc};
 
-// CK≥£¡ø
+// CKÂ∏∏Èáè
 const uint32_t CK[32] = {
     0x00070e15, 0x1c232a31, 0x383f464d, 0x545b6269,
     0x70777e85, 0x8c939aa1, 0xa8afb6bd, 0xc4cbd2d9,
@@ -39,28 +39,28 @@ const uint32_t CK[32] = {
     0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279
 };
 
-// —≠ª∑◊Û“∆
+// Âæ™ÁéØÂ∑¶Áßª
 uint32_t RotL(uint32_t x, int n) {
     return (x << n) | (x >> (32 - n));
 }
 
-// ∑«œﬂ–‘±‰ªª¶”
+// ÈùûÁ∫øÊÄßÂèòÊç¢œÑ
 uint32_t Tau(uint32_t x) {
     return (SBox[x >> 24] << 24) | (SBox[(x >> 16) & 0xFF] << 16) |
            (SBox[(x >> 8) & 0xFF] << 8) | SBox[x & 0xFF];
 }
 
-// œﬂ–‘±‰ªªL
+// Á∫øÊÄßÂèòÊç¢L
 uint32_t L(uint32_t x) {
     return x ^ RotL(x, 2) ^ RotL(x, 10) ^ RotL(x, 18) ^ RotL(x, 24);
 }
 
-// √‹‘ø¿©’πœﬂ–‘±‰ªªL'
+// ÂØÜÈí•Êâ©Â±ïÁ∫øÊÄßÂèòÊç¢L'
 uint32_t LPrime(uint32_t x) {
     return x ^ RotL(x, 13) ^ RotL(x, 23);
 }
 
-// …˙≥…¬÷√‹‘ø
+// ÁîüÊàêËΩÆÂØÜÈí•
 void KeyExpansion(const uint32_t MK[4], uint32_t rk[32]) {
     uint32_t K[36];
     for (int i = 0; i < 4; i++) {
@@ -73,7 +73,7 @@ void KeyExpansion(const uint32_t MK[4], uint32_t rk[32]) {
     }
 }
 
-// º”√‹/Ω‚√‹∫Ø ˝
+// Âä†ÂØÜ/Ëß£ÂØÜÂáΩÊï∞
 void SM4Crypt(const uint32_t input[4], uint32_t output[4], const uint32_t rk[32], bool encrypt) {
     uint32_t X[36];
     for (int i = 0; i < 4; i++) {
@@ -91,39 +91,39 @@ void SM4Crypt(const uint32_t input[4], uint32_t output[4], const uint32_t rk[32]
 }
 
 int main() {
-    // √˜Œƒ∫Õ√‹‘ø æ¿˝
+    // ÊòéÊñáÂíåÂØÜÈí•Á§∫‰æã
     uint32_t plaintext[4] = {0x01234567, 0x89abcdef, 0xfedcba98, 0x76543210};
     uint32_t key[4] = {0x01234567, 0x89abcdef, 0xfedcba98, 0x76543210};
     uint32_t ciphertext[4], decrypted[4];
     uint32_t rk[32];
 
-    // ’π æ√˜Œƒ∫Õ√‹‘ø
-    cout << "√˜Œƒ: ";
+    // Â±ïÁ§∫ÊòéÊñáÂíåÂØÜÈí•
+    cout << "ÊòéÊñá: ";
     for (int i = 0; i < 4; i++) {
         printf("%08x ", plaintext[i]);
     }
     cout << endl;
 
-    cout << "√‹‘ø: ";
+    cout << "ÂØÜÈí•: ";
     for (int i = 0; i < 4; i++) {
         printf("%08x ", key[i]);
     }
     cout << endl;
 
-    // …˙≥…¬÷√‹‘ø
+    // ÁîüÊàêËΩÆÂØÜÈí•
     KeyExpansion(key, rk);
 
-    // º”√‹
+    // Âä†ÂØÜ
     SM4Crypt(plaintext, ciphertext, rk, true);
-    cout << "º”√‹Ω·π˚: ";
+    cout << "Âä†ÂØÜÁªìÊûú: ";
     for (int i = 0; i < 4; i++) {
         printf("%08x ", ciphertext[i]);
     }
     cout << endl;
 
-    // Ω‚√‹
+    // Ëß£ÂØÜ
     SM4Crypt(ciphertext, decrypted, rk, false);
-    cout << "Ω‚√‹Ω·π˚: ";
+    cout << "Ëß£ÂØÜÁªìÊûú: ";
     for (int i = 0; i < 4; i++) {
         printf("%08x ", decrypted[i]);
     }
