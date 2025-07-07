@@ -313,14 +313,6 @@ int main() {
     
     // 性能测试
     PerformanceTest();
-    
-    cout << "\n=== T表优化说明 ===" << endl;
-    cout << "T表优化原理:" << endl;
-    cout << "1. 预计算S盒替换和线性变换的复合操作" << endl;
-    cout << "2. 将原本的多步骤计算合并为一次查表操作" << endl;
-    cout << "3. 减少了循环左移和异或操作的次数" << endl;
-    cout << "4. 提高了缓存命中率，减少了计算延迟" << endl;
-    cout << "5. 空间换时间的经典优化策略" << endl;
 
     return 0;
 }
