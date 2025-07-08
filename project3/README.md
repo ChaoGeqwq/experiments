@@ -1,311 +1,311 @@
-# Poseidon2 ÁãÖªÊ¶Ö¤Ã÷µçÂ·ÊµÏÖ
+# Poseidon2 é›¶çŸ¥è¯†è¯æ˜ç”µè·¯å®ç°
 
-»ùÓÚ Circom ºÍ Groth16 Ğ­ÒéµÄ Poseidon2 ¹şÏ£Ëã·¨ÁãÖªÊ¶Ö¤Ã÷ÏµÍ³¡£
+åŸºäº Circom å’Œ Groth16 åè®®çš„ Poseidon2 å“ˆå¸Œç®—æ³•é›¶çŸ¥è¯†è¯æ˜ç³»ç»Ÿã€‚
 
-## ? ÏîÄ¿¸ÅÊö
+## ? é¡¹ç›®æ¦‚è¿°
 
-±¾ÏîÄ¿ÊµÏÖÁË Poseidon2 ¹şÏ£Ëã·¨µÄÁãÖªÊ¶Ö¤Ã÷µçÂ·£¬Ö§³ÖÒÔÏÂÌØĞÔ£º
+æœ¬é¡¹ç›®å®ç°äº† Poseidon2 å“ˆå¸Œç®—æ³•çš„é›¶çŸ¥è¯†è¯æ˜ç”µè·¯ï¼Œæ”¯æŒä»¥ä¸‹ç‰¹æ€§ï¼š
 
-- ? **Poseidon2 ¹şÏ£Ëã·¨**£º»ùÓÚÂÛÎÄ [Poseidon2: A Fast and Secure Hash Function](https://eprint.iacr.org/2023/323.pdf)
-- ? **²ÎÊıÅäÖÃ**£ºÖ§³Ö (n,t,d) = (256,3,5) ºÍ (256,2,5) Á½ÖÖÅäÖÃ
-- ? **ÁãÖªÊ¶Ö¤Ã÷**£ºÖ¤Ã÷ÖªµÀÄ³¸ö¹şÏ£ÖµµÄÔ­Ïó£¬¶ø²»Ğ¹Â¶Ô­Ïó±¾Éí
-- ? **Groth16 Ğ­Òé**£ºÊ¹ÓÃ Groth16 zk-SNARK Ğ­ÒéÉú³É¼ò½àÖ¤Ã÷
-- ? **ÍêÕû¹¤¾ßÁ´**£º´ÓµçÂ·±àÒëµ½Ö¤Ã÷ÑéÖ¤µÄÍêÕûÁ÷³Ì
+- ? **Poseidon2 å“ˆå¸Œç®—æ³•**ï¼šåŸºäºè®ºæ–‡ [Poseidon2: A Fast and Secure Hash Function](https://eprint.iacr.org/2023/323.pdf)
+- ? **å‚æ•°é…ç½®**ï¼šæ”¯æŒ (n,t,d) = (256,3,5) å’Œ (256,2,5) ä¸¤ç§é…ç½®
+- ? **é›¶çŸ¥è¯†è¯æ˜**ï¼šè¯æ˜çŸ¥é“æŸä¸ªå“ˆå¸Œå€¼çš„åŸè±¡ï¼Œè€Œä¸æ³„éœ²åŸè±¡æœ¬èº«
+- ? **Groth16 åè®®**ï¼šä½¿ç”¨ Groth16 zk-SNARK åè®®ç”Ÿæˆç®€æ´è¯æ˜
+- ? **å®Œæ•´å·¥å…·é“¾**ï¼šä»ç”µè·¯ç¼–è¯‘åˆ°è¯æ˜éªŒè¯çš„å®Œæ•´æµç¨‹
 
-## ?? ÏîÄ¿½á¹¹
+## ?? é¡¹ç›®ç»“æ„
 
 ```
 project3/
-©À©¤©¤ poseidon2.circom           # Circom µçÂ·ÊµÏÖ
-©À©¤©¤ poseidon2_test.py          # Python ²âÊÔ½Å±¾
-©À©¤©¤ package.json               # Node.js ÒÀÀµÅäÖÃ
-©À©¤©¤ setup.sh                   # »·¾³°²×°½Å±¾
-©À©¤©¤ README.md                  # ÏîÄ¿ËµÃ÷ÎÄµµ
-©¸©¤©¤ build/                     # ±àÒëÊä³öÄ¿Â¼
-    ©À©¤©¤ poseidon2.r1cs         # R1CS Ô¼ÊøÏµÍ³
-    ©À©¤©¤ poseidon2.wasm         # WASM Ö¤ÈËÉú³ÉÆ÷
-    ©¸©¤©¤ poseidon2_js/          # JavaScript ½Ó¿Ú
+â”œâ”€â”€ poseidon2.circom           # Circom ç”µè·¯å®ç°
+â”œâ”€â”€ poseidon2_test.py          # Python æµ‹è¯•è„šæœ¬
+â”œâ”€â”€ package.json               # Node.js ä¾èµ–é…ç½®
+â”œâ”€â”€ setup.sh                   # ç¯å¢ƒå®‰è£…è„šæœ¬
+â”œâ”€â”€ README.md                  # é¡¹ç›®è¯´æ˜æ–‡æ¡£
+â””â”€â”€ build/                     # ç¼–è¯‘è¾“å‡ºç›®å½•
+    â”œâ”€â”€ poseidon2.r1cs         # R1CS çº¦æŸç³»ç»Ÿ
+    â”œâ”€â”€ poseidon2.wasm         # WASM è¯äººç”Ÿæˆå™¨
+    â””â”€â”€ poseidon2_js/          # JavaScript æ¥å£
 ```
 
-## ? ¿ìËÙ¿ªÊ¼
+## ? å¿«é€Ÿå¼€å§‹
 
-### 1. »·¾³ÉèÖÃ
+### 1. ç¯å¢ƒè®¾ç½®
 
-Ê×ÏÈÔËĞĞ°²×°½Å±¾À´ÉèÖÃ»·¾³£º
+é¦–å…ˆè¿è¡Œå®‰è£…è„šæœ¬æ¥è®¾ç½®ç¯å¢ƒï¼š
 
 ```bash
 chmod +x setup.sh
 ./setup.sh
 ```
 
-»òÕßÊÖ¶¯°²×°ÒÀÀµ£º
+æˆ–è€…æ‰‹åŠ¨å®‰è£…ä¾èµ–ï¼š
 
 ```bash
-# °²×° Node.js (Ubuntu/Debian)
+# å®‰è£… Node.js (Ubuntu/Debian)
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-# °²×° Rust (±àÒë circom ĞèÒª)
+# å®‰è£… Rust (ç¼–è¯‘ circom éœ€è¦)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source ~/.cargo/env
 
-# ±àÒë°²×° circom
+# ç¼–è¯‘å®‰è£… circom
 git clone https://github.com/iden3/circom.git
 cd circom
 cargo build --release
 sudo cp target/release/circom /usr/local/bin/
 
-# °²×° snarkjs
+# å®‰è£… snarkjs
 npm install -g snarkjs
 ```
 
-### 2. ÔËĞĞ²âÊÔ
+### 2. è¿è¡Œæµ‹è¯•
 
-ÔËĞĞÍêÕûµÄ²âÊÔÁ÷³Ì£º
+è¿è¡Œå®Œæ•´çš„æµ‹è¯•æµç¨‹ï¼š
 
 ```bash
-# Ê¹ÓÃ t=3 °æ±¾ (Ä¬ÈÏ)
+# ä½¿ç”¨ t=3 ç‰ˆæœ¬ (é»˜è®¤)
 python3 poseidon2_test.py
 
-# Ê¹ÓÃ t=2 °æ±¾
+# ä½¿ç”¨ t=2 ç‰ˆæœ¬
 python3 poseidon2_test.py --t2
 ```
 
-### 3. ÊÖ¶¯Ö´ĞĞ²½Öè
+### 3. æ‰‹åŠ¨æ‰§è¡Œæ­¥éª¤
 
-Èç¹ûÏëÒªÊÖ¶¯Ö´ĞĞ¸÷¸ö²½Öè£º
+å¦‚æœæƒ³è¦æ‰‹åŠ¨æ‰§è¡Œå„ä¸ªæ­¥éª¤ï¼š
 
 ```bash
-# 1. ±àÒëµçÂ·
+# 1. ç¼–è¯‘ç”µè·¯
 circom poseidon2.circom --r1cs --wasm --sym -o build/
 
-# 2. Éú³É²âÊÔÊäÈë (´´½¨ inputs/input.json)
+# 2. ç”Ÿæˆæµ‹è¯•è¾“å…¥ (åˆ›å»º inputs/input.json)
 echo '{"hash": "998877665544332211", "preimage": ["12345", "67890"]}' > inputs/input.json
 
-# 3. Éú³ÉÖ¤ÈË
+# 3. ç”Ÿæˆè¯äºº
 node build/poseidon2_js/generate_witness.js \
      build/poseidon2_js/poseidon2.wasm \
      inputs/input.json \
      witnesses/witness.wtns
 
-# 4. ¿ÉĞÅÉèÖÃ (Powers of Tau)
+# 4. å¯ä¿¡è®¾ç½® (Powers of Tau)
 snarkjs powersoftau new bn128 12 pot12_0000.ptau -v
 snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="First" -v
 snarkjs powersoftau prepare phase2 pot12_0001.ptau pot12_final.ptau -v
 
-# 5. µçÂ·ÌØ¶¨ÉèÖÃ
+# 5. ç”µè·¯ç‰¹å®šè®¾ç½®
 snarkjs groth16 setup build/poseidon2.r1cs pot12_final.ptau keys/poseidon2_0000.zkey
 snarkjs zkey contribute keys/poseidon2_0000.zkey keys/poseidon2_0001.zkey --name="Second" -v
 snarkjs zkey export verificationkey keys/poseidon2_0001.zkey keys/verification_key.json
 
-# 6. Éú³ÉÖ¤Ã÷
+# 6. ç”Ÿæˆè¯æ˜
 snarkjs groth16 prove keys/poseidon2_0001.zkey witnesses/witness.wtns proofs/proof.json proofs/public.json
 
-# 7. ÑéÖ¤Ö¤Ã÷
+# 7. éªŒè¯è¯æ˜
 snarkjs groth16 verify keys/verification_key.json proofs/public.json proofs/proof.json
 ```
 
-## ? ¼¼ÊõÏ¸½Ú
+## ? æŠ€æœ¯ç»†èŠ‚
 
-### Poseidon2 Ëã·¨²ÎÊı
+### Poseidon2 ç®—æ³•å‚æ•°
 
-¸ù¾İÂÛÎÄ Table 1£¬ÎÒÃÇÊ¹ÓÃÒÔÏÂ²ÎÊı£º
+æ ¹æ®è®ºæ–‡ Table 1ï¼Œæˆ‘ä»¬ä½¿ç”¨ä»¥ä¸‹å‚æ•°ï¼š
 
-| ²ÎÊı | ÃèÊö | t=3 °æ±¾ | t=2 °æ±¾ |
+| å‚æ•° | æè¿° | t=3 ç‰ˆæœ¬ | t=2 ç‰ˆæœ¬ |
 |------|------|----------|----------|
-| n | ×Ö¶Î´óĞ¡ | 256 | 256 |
-| t | ×´Ì¬¿í¶È | 3 | 2 |
-| d | S-box ¶ÈÊı | 5 | 5 |
-| R_F | ÍêÕûÂÖÊı | 8 | 8 |
-| R_P | ²¿·ÖÂÖÊı | 56 | 56 |
+| n | å­—æ®µå¤§å° | 256 | 256 |
+| t | çŠ¶æ€å®½åº¦ | 3 | 2 |
+| d | S-box åº¦æ•° | 5 | 5 |
+| R_F | å®Œæ•´è½®æ•° | 8 | 8 |
+| R_P | éƒ¨åˆ†è½®æ•° | 56 | 56 |
 
-### µçÂ·½á¹¹
+### ç”µè·¯ç»“æ„
 
 ```circom
-// Ö÷Òª×é¼ş
-template SBox5()              // 5´Î·½S-box
-template MDS3x3()             // 3x3 MDS¾ØÕó
-template AddRoundConstants()  // ÂÖ³£Êı¼Ó·¨
-template Poseidon2_T3_D5()    // Ö÷¹şÏ£º¯Êı
-template Poseidon2ProofT3()   // ÁãÖªÊ¶Ö¤Ã÷µçÂ·
+// ä¸»è¦ç»„ä»¶
+template SBox5()              // 5æ¬¡æ–¹S-box
+template MDS3x3()             // 3x3 MDSçŸ©é˜µ
+template AddRoundConstants()  // è½®å¸¸æ•°åŠ æ³•
+template Poseidon2_T3_D5()    // ä¸»å“ˆå¸Œå‡½æ•°
+template Poseidon2ProofT3()   // é›¶çŸ¥è¯†è¯æ˜ç”µè·¯
 ```
 
-### ÁãÖªÊ¶Ö¤Ã÷Âß¼­
+### é›¶çŸ¥è¯†è¯æ˜é€»è¾‘
 
 ```
-¹«¿ªÊäÈë£ºhash (¹şÏ£Öµ)
-Ë½ÓĞÊäÈë£ºpreimage[] (Ô­Ïó)
-Ô¼Êø£ºhash === Poseidon2(preimage)
+å…¬å¼€è¾“å…¥ï¼šhash (å“ˆå¸Œå€¼)
+ç§æœ‰è¾“å…¥ï¼špreimage[] (åŸè±¡)
+çº¦æŸï¼šhash === Poseidon2(preimage)
 ```
 
-## ? ĞÔÄÜÖ¸±ê
+## ? æ€§èƒ½æŒ‡æ ‡
 
-ÒÔÏÂÊÇµäĞÍµÄĞÔÄÜÖ¸±ê£¨¾ßÌåÊıÖµÈ¡¾öÓÚÓ²¼şºÍ²ÎÊı£©£º
+ä»¥ä¸‹æ˜¯å…¸å‹çš„æ€§èƒ½æŒ‡æ ‡ï¼ˆå…·ä½“æ•°å€¼å–å†³äºç¡¬ä»¶å’Œå‚æ•°ï¼‰ï¼š
 
-| Ö¸±ê | t=3 °æ±¾ | t=2 °æ±¾ |
+| æŒ‡æ ‡ | t=3 ç‰ˆæœ¬ | t=2 ç‰ˆæœ¬ |
 |------|----------|----------|
-| Ô¼ÊøÊıÁ¿ | ~10,000 | ~8,000 |
-| Ö¤Ã÷Ê±¼ä | 2-5 Ãë | 1-3 Ãë |
-| ÑéÖ¤Ê±¼ä | <100ms | <100ms |
-| Ö¤Ã÷´óĞ¡ | 128 ×Ö½Ú | 128 ×Ö½Ú |
+| çº¦æŸæ•°é‡ | ~10,000 | ~8,000 |
+| è¯æ˜æ—¶é—´ | 2-5 ç§’ | 1-3 ç§’ |
+| éªŒè¯æ—¶é—´ | <100ms | <100ms |
+| è¯æ˜å¤§å° | 128 å­—èŠ‚ | 128 å­—èŠ‚ |
 
-## ? ²âÊÔÊ¾Àı
+## ? æµ‹è¯•ç¤ºä¾‹
 
-³É¹¦ÔËĞĞºó£¬Äã»á¿´µ½ÀàËÆµÄÊä³ö£º
+æˆåŠŸè¿è¡Œåï¼Œä½ ä¼šçœ‹åˆ°ç±»ä¼¼çš„è¾“å‡ºï¼š
 
 ```
-? Poseidon2 ÁãÖªÊ¶Ö¤Ã÷²âÊÔ
-? Ê¹ÓÃ²ÎÊı: t=3, d=5
+? Poseidon2 é›¶çŸ¥è¯†è¯æ˜æµ‹è¯•
+? ä½¿ç”¨å‚æ•°: t=3, d=5
 ============================================================
 
-? ¼ì²éÒÀÀµ...
+? æ£€æŸ¥ä¾èµ–...
 ? Circom compiler: circom 2.1.6
 ? SnarkJS toolkit: snarkjs 0.6.11
 ? Node.js runtime: v18.17.0
 
-? ±àÒëµçÂ·...
-? µçÂ·±àÒë³É¹¦
+? ç¼–è¯‘ç”µè·¯...
+? ç”µè·¯ç¼–è¯‘æˆåŠŸ
 
-? Éú³É²âÊÔÊäÈë...
-? ²âÊÔÊäÈëÒÑÉú³É: inputs/input.json
-   ¹şÏ£Öµ: 998877665544332211
-   Ô­Ïó: [12345, 67890]
+? ç”Ÿæˆæµ‹è¯•è¾“å…¥...
+? æµ‹è¯•è¾“å…¥å·²ç”Ÿæˆ: inputs/input.json
+   å“ˆå¸Œå€¼: 998877665544332211
+   åŸè±¡: [12345, 67890]
 
-? Éú³ÉÖ¤ÈË...
-? Ö¤ÈËÉú³É³É¹¦
+? ç”Ÿæˆè¯äºº...
+? è¯äººç”ŸæˆæˆåŠŸ
 
-? ¿ÉĞÅÉèÖÃ...
-? ¿ÉĞÅÉèÖÃÍê³É
+? å¯ä¿¡è®¾ç½®...
+? å¯ä¿¡è®¾ç½®å®Œæˆ
 
-? Éú³ÉÖ¤Ã÷...
-? Ö¤Ã÷Éú³É³É¹¦
+? ç”Ÿæˆè¯æ˜...
+? è¯æ˜ç”ŸæˆæˆåŠŸ
 
-? ÑéÖ¤Ö¤Ã÷...
-? Ö¤Ã÷ÑéÖ¤³É¹¦! ?
+? éªŒè¯è¯æ˜...
+? è¯æ˜éªŒè¯æˆåŠŸ! ?
 
-? ÏÔÊ¾ĞÅÏ¢...
-? µçÂ·ĞÅÏ¢:
-  R1CSÎÄ¼ş´óĞ¡: 245760 bytes
-  ¹ÀËãÔ¼ÊøÊıÁ¿: ~7680
+? æ˜¾ç¤ºä¿¡æ¯...
+? ç”µè·¯ä¿¡æ¯:
+  R1CSæ–‡ä»¶å¤§å°: 245760 bytes
+  ä¼°ç®—çº¦æŸæ•°é‡: ~7680
 
-? ËùÓĞ²âÊÔ²½ÖèÍê³É!
-? Poseidon2 ÁãÖªÊ¶Ö¤Ã÷ÏµÍ³ÔËĞĞ³É¹¦!
+? æ‰€æœ‰æµ‹è¯•æ­¥éª¤å®Œæˆ!
+? Poseidon2 é›¶çŸ¥è¯†è¯æ˜ç³»ç»Ÿè¿è¡ŒæˆåŠŸ!
 ```
 
-## ? Éú³ÉµÄÎÄ¼ş
+## ? ç”Ÿæˆçš„æ–‡ä»¶
 
-ÔËĞĞÍê³Éºó£¬»áÉú³ÉÒÔÏÂÎÄ¼ş£º
+è¿è¡Œå®Œæˆåï¼Œä¼šç”Ÿæˆä»¥ä¸‹æ–‡ä»¶ï¼š
 
 ```
 build/
-©À©¤©¤ poseidon2.r1cs                    # R1CSÔ¼ÊøÏµÍ³
-©À©¤©¤ poseidon2.wasm                    # WASMÖ¤ÈËÉú³ÉÆ÷
-©¸©¤©¤ poseidon2_js/
-    ©À©¤©¤ poseidon2.wasm               # WASMÎÄ¼ş
-    ©À©¤©¤ witness_calculator.js        # Ö¤ÈË¼ÆËãÆ÷
-    ©¸©¤©¤ generate_witness.js          # Ö¤ÈËÉú³É½Å±¾
+â”œâ”€â”€ poseidon2.r1cs                    # R1CSçº¦æŸç³»ç»Ÿ
+â”œâ”€â”€ poseidon2.wasm                    # WASMè¯äººç”Ÿæˆå™¨
+â””â”€â”€ poseidon2_js/
+    â”œâ”€â”€ poseidon2.wasm               # WASMæ–‡ä»¶
+    â”œâ”€â”€ witness_calculator.js        # è¯äººè®¡ç®—å™¨
+    â””â”€â”€ generate_witness.js          # è¯äººç”Ÿæˆè„šæœ¬
 
 keys/
-©À©¤©¤ poseidon2_0000.zkey              # ³õÊ¼Ö¤Ã÷ÃÜÔ¿
-©À©¤©¤ poseidon2_0001.zkey              # ×îÖÕÖ¤Ã÷ÃÜÔ¿
-©¸©¤©¤ verification_key.json           # ÑéÖ¤ÃÜÔ¿
+â”œâ”€â”€ poseidon2_0000.zkey              # åˆå§‹è¯æ˜å¯†é’¥
+â”œâ”€â”€ poseidon2_0001.zkey              # æœ€ç»ˆè¯æ˜å¯†é’¥
+â””â”€â”€ verification_key.json           # éªŒè¯å¯†é’¥
 
 proofs/
-©À©¤©¤ proof.json                       # Groth16Ö¤Ã÷
-©¸©¤©¤ public.json                      # ¹«¿ªÊäÈë
+â”œâ”€â”€ proof.json                       # Groth16è¯æ˜
+â””â”€â”€ public.json                      # å…¬å¼€è¾“å…¥
 
 inputs/
-©¸©¤©¤ input.json                       # ²âÊÔÊäÈëÊı¾İ
+â””â”€â”€ input.json                       # æµ‹è¯•è¾“å…¥æ•°æ®
 
 witnesses/
-©¸©¤©¤ witness.wtns                     # Ö¤ÈËÎÄ¼ş
+â””â”€â”€ witness.wtns                     # è¯äººæ–‡ä»¶
 ```
 
-## ? °²È«¿¼ÂÇ
+## ? å®‰å…¨è€ƒè™‘
 
-?? **ÖØÒªÌáĞÑ**£º
+?? **é‡è¦æé†’**ï¼š
 
-1. **ÂÖ³£Êı**£ºµ±Ç°ÊµÏÖÊ¹ÓÃ¼ò»¯µÄÂÖ³£Êı£¬Éú²ú»·¾³±ØĞëÊ¹ÓÃÂÛÎÄ¹æ·¶µÄ¹Ù·½³£Êı
-2. **MDS¾ØÕó**£ºÊ¹ÓÃÁË¼ò»¯µÄMDS¾ØÕó£¬Êµ¼ÊÓ¦ÓÃĞèÒªÊ¹ÓÃ¾­¹ıÓÅ»¯µÄ°²È«¾ØÕó
-3. **¿ÉĞÅÉèÖÃ**£ºGroth16ĞèÒª¿ÉĞÅÉèÖÃ£¬Éú²ú»·¾³Ó¦Ê¹ÓÃ´óĞÍÒÇÊ½Éú³ÉµÄ²ÎÊı
-4. **´úÂëÉó¼Æ**£ºÕâÊÇÑİÊ¾ÊµÏÖ£¬Éú²úÊ¹ÓÃĞèÒªÍêÕûµÄ°²È«Éó¼Æ
+1. **è½®å¸¸æ•°**ï¼šå½“å‰å®ç°ä½¿ç”¨ç®€åŒ–çš„è½®å¸¸æ•°ï¼Œç”Ÿäº§ç¯å¢ƒå¿…é¡»ä½¿ç”¨è®ºæ–‡è§„èŒƒçš„å®˜æ–¹å¸¸æ•°
+2. **MDSçŸ©é˜µ**ï¼šä½¿ç”¨äº†ç®€åŒ–çš„MDSçŸ©é˜µï¼Œå®é™…åº”ç”¨éœ€è¦ä½¿ç”¨ç»è¿‡ä¼˜åŒ–çš„å®‰å…¨çŸ©é˜µ
+3. **å¯ä¿¡è®¾ç½®**ï¼šGroth16éœ€è¦å¯ä¿¡è®¾ç½®ï¼Œç”Ÿäº§ç¯å¢ƒåº”ä½¿ç”¨å¤§å‹ä»ªå¼ç”Ÿæˆçš„å‚æ•°
+4. **ä»£ç å®¡è®¡**ï¼šè¿™æ˜¯æ¼”ç¤ºå®ç°ï¼Œç”Ÿäº§ä½¿ç”¨éœ€è¦å®Œæ•´çš„å®‰å…¨å®¡è®¡
 
-## ?? ¹ÊÕÏÅÅ³ı
+## ?? æ•…éšœæ’é™¤
 
-### ³£¼ûÎÊÌâ
+### å¸¸è§é—®é¢˜
 
-1. **circom ±àÒëÊ§°Ü**
+1. **circom ç¼–è¯‘å¤±è´¥**
    ```bash
-   # ¼ì²écircom°æ±¾
+   # æ£€æŸ¥circomç‰ˆæœ¬
    circom --version
    
-   # ÖØĞÂ°²×°circom
+   # é‡æ–°å®‰è£…circom
    cargo install --force --git https://github.com/iden3/circom.git
    ```
 
-2. **snarkjs ÃüÁî²»´æÔÚ**
+2. **snarkjs å‘½ä»¤ä¸å­˜åœ¨**
    ```bash
-   # È«¾Ö°²×°snarkjs
+   # å…¨å±€å®‰è£…snarkjs
    npm install -g snarkjs
    
-   # ¼ì²éPATH
+   # æ£€æŸ¥PATH
    echo $PATH | grep node
    ```
 
-3. **ÄÚ´æ²»×ã**
+3. **å†…å­˜ä¸è¶³**
    ```bash
-   # Ôö¼ÓNode.jsÄÚ´æÏŞÖÆ
+   # å¢åŠ Node.jså†…å­˜é™åˆ¶
    export NODE_OPTIONS="--max-old-space-size=4096"
    ```
 
-4. **È¨ÏŞÎÊÌâ**
+4. **æƒé™é—®é¢˜**
    ```bash
-   # ĞŞ¸´npmÈ¨ÏŞ
+   # ä¿®å¤npmæƒé™
    sudo chown -R $(whoami) ~/.npm
    ```
 
-### ÈÕÖ¾ºÍµ÷ÊÔ
+### æ—¥å¿—å’Œè°ƒè¯•
 
-ÆôÓÃÏêÏ¸ÈÕÖ¾£º
+å¯ç”¨è¯¦ç»†æ—¥å¿—ï¼š
 
 ```bash
-# ÉèÖÃÈÕÖ¾¼¶±ğ
+# è®¾ç½®æ—¥å¿—çº§åˆ«
 export LOG_LEVEL=DEBUG
 
-# ÔËĞĞ²âÊÔ
+# è¿è¡Œæµ‹è¯•
 python3 poseidon2_test.py
 ```
 
-## ? ²Î¿¼×ÊÁÏ
+## ? å‚è€ƒèµ„æ–™
 
-1. [Poseidon2 ÂÛÎÄ](https://eprint.iacr.org/2023/323.pdf)
-2. [Circom ¹Ù·½ÎÄµµ](https://docs.circom.io/)
-3. [SnarkJS ÎÄµµ](https://github.com/iden3/snarkjs)
-4. [Groth16 ÂÛÎÄ](https://eprint.iacr.org/2016/260.pdf)
-5. [ZK-SNARKs ÈëÃÅ](https://zkp.science/)
+1. [Poseidon2 è®ºæ–‡](https://eprint.iacr.org/2023/323.pdf)
+2. [Circom å®˜æ–¹æ–‡æ¡£](https://docs.circom.io/)
+3. [SnarkJS æ–‡æ¡£](https://github.com/iden3/snarkjs)
+4. [Groth16 è®ºæ–‡](https://eprint.iacr.org/2016/260.pdf)
+5. [ZK-SNARKs å…¥é—¨](https://zkp.science/)
 
-## ? ¹±Ï×Ö¸ÄÏ
+## ? è´¡çŒ®æŒ‡å—
 
-»¶Ó­Ìá½» Issue ºÍ Pull Request£¡
+æ¬¢è¿æäº¤ Issue å’Œ Pull Requestï¼
 
-1. Fork ±¾²Ö¿â
-2. ´´½¨ÌØĞÔ·ÖÖ§ (`git checkout -b feature/amazing-feature`)
-3. Ìá½»¸ü¸Ä (`git commit -m 'Add amazing feature'`)
-4. ÍÆËÍµ½·ÖÖ§ (`git push origin feature/amazing-feature`)
-5. ´´½¨ Pull Request
+1. Fork æœ¬ä»“åº“
+2. åˆ›å»ºç‰¹æ€§åˆ†æ”¯ (`git checkout -b feature/amazing-feature`)
+3. æäº¤æ›´æ”¹ (`git commit -m 'Add amazing feature'`)
+4. æ¨é€åˆ°åˆ†æ”¯ (`git push origin feature/amazing-feature`)
+5. åˆ›å»º Pull Request
 
-## ? Ğí¿ÉÖ¤
+## ? è®¸å¯è¯
 
-±¾ÏîÄ¿²ÉÓÃ MIT Ğí¿ÉÖ¤ - Ïê¼û [LICENSE](LICENSE) ÎÄ¼ş¡£
+æœ¬é¡¹ç›®é‡‡ç”¨ MIT è®¸å¯è¯ - è¯¦è§ [LICENSE](LICENSE) æ–‡ä»¶ã€‚
 
-## ? ÖÂĞ»
+## ? è‡´è°¢
 
-¸ĞĞ»ÒÔÏÂ¿ªÔ´ÏîÄ¿£º
+æ„Ÿè°¢ä»¥ä¸‹å¼€æºé¡¹ç›®ï¼š
 
-- [iden3/circom](https://github.com/iden3/circom) - Circom ±àÒëÆ÷
-- [iden3/snarkjs](https://github.com/iden3/snarkjs) - JavaScript zk-SNARK ÊµÏÖ
-- [Poseidon2 ÂÛÎÄ×÷Õß](https://eprint.iacr.org/2023/323.pdf) - Ëã·¨Éè¼Æ
+- [iden3/circom](https://github.com/iden3/circom) - Circom ç¼–è¯‘å™¨
+- [iden3/snarkjs](https://github.com/iden3/snarkjs) - JavaScript zk-SNARK å®ç°
+- [Poseidon2 è®ºæ–‡ä½œè€…](https://eprint.iacr.org/2023/323.pdf) - ç®—æ³•è®¾è®¡
 
 ---
 
-? **°²È«ÌáĞÑ**£ºÕâÊÇÒ»¸ö½ÌÓıºÍÑĞ¾¿ÓÃÍ¾µÄÊµÏÖ£¬²»ÊÊºÏÖ±½ÓÓÃÓÚÉú²ú»·¾³¡£Éú²úÊ¹ÓÃÇ°Çë½øĞĞ³ä·ÖµÄ°²È«Éó¼Æ¡£
+? **å®‰å…¨æé†’**ï¼šè¿™æ˜¯ä¸€ä¸ªæ•™è‚²å’Œç ”ç©¶ç”¨é€”çš„å®ç°ï¼Œä¸é€‚åˆç›´æ¥ç”¨äºç”Ÿäº§ç¯å¢ƒã€‚ç”Ÿäº§ä½¿ç”¨å‰è¯·è¿›è¡Œå……åˆ†çš„å®‰å…¨å®¡è®¡ã€‚

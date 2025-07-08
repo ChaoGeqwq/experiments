@@ -1,29 +1,29 @@
 #!/bin/bash
 
-# Poseidon2 ÁãÖªÊ¶Ö¤Ã÷»·¾³°²×°½Å±¾
-echo "? ÉèÖÃ Poseidon2 ÁãÖªÊ¶Ö¤Ã÷»·¾³"
+# Poseidon2 é›¶çŸ¥è¯†è¯æ˜ç¯å¢ƒå®‰è£…è„šæœ¬
+echo "? è®¾ç½® Poseidon2 é›¶çŸ¥è¯†è¯æ˜ç¯å¢ƒ"
 echo "=================================="
 
-# ¼ì²é²Ù×÷ÏµÍ³
+# æ£€æŸ¥æ“ä½œç³»ç»Ÿ
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     OS="linux"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     OS="macos"
 else
-    echo "? ²»Ö§³ÖµÄ²Ù×÷ÏµÍ³: $OSTYPE"
+    echo "? ä¸æ”¯æŒçš„æ“ä½œç³»ç»Ÿ: $OSTYPE"
     exit 1
 fi
 
-echo "? ¼ì²âµ½ÏµÍ³: $OS"
+echo "? æ£€æµ‹åˆ°ç³»ç»Ÿ: $OS"
 
-# ´´½¨ÏîÄ¿Ä¿Â¼
-echo "? ´´½¨ÏîÄ¿Ä¿Â¼..."
+# åˆ›å»ºé¡¹ç›®ç›®å½•
+echo "? åˆ›å»ºé¡¹ç›®ç›®å½•..."
 mkdir -p build keys proofs inputs witnesses
 
-# ¼ì²é²¢°²×° Node.js
-echo "? ¼ì²é Node.js..."
+# æ£€æŸ¥å¹¶å®‰è£… Node.js
+echo "? æ£€æŸ¥ Node.js..."
 if ! command -v node &> /dev/null; then
-    echo "? °²×° Node.js..."
+    echo "? å®‰è£… Node.js..."
     if [[ "$OS" == "linux" ]]; then
         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt-get install -y nodejs
@@ -31,28 +31,28 @@ if ! command -v node &> /dev/null; then
         if command -v brew &> /dev/null; then
             brew install node
         else
-            echo "? ÇëÏÈ°²×° Homebrew: https://brew.sh/"
+            echo "? è¯·å…ˆå®‰è£… Homebrew: https://brew.sh/"
             exit 1
         fi
     fi
 else
-    echo "? Node.js ÒÑ°²×°: $(node --version)"
+    echo "? Node.js å·²å®‰è£…: $(node --version)"
 fi
 
-# ¼ì²é²¢°²×° Rust (±àÒë circom ĞèÒª)
-echo "? ¼ì²é Rust..."
+# æ£€æŸ¥å¹¶å®‰è£… Rust (ç¼–è¯‘ circom éœ€è¦)
+echo "? æ£€æŸ¥ Rust..."
 if ! command -v cargo &> /dev/null; then
-    echo "? °²×° Rust..."
+    echo "? å®‰è£… Rust..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     source ~/.cargo/env
 else
-    echo "? Rust ÒÑ°²×°: $(cargo --version)"
+    echo "? Rust å·²å®‰è£…: $(cargo --version)"
 fi
 
-# ¼ì²é²¢°²×° circom
-echo "? ¼ì²é circom..."
+# æ£€æŸ¥å¹¶å®‰è£… circom
+echo "? æ£€æŸ¥ circom..."
 if ! command -v circom &> /dev/null; then
-    echo "? ±àÒë°²×° circom..."
+    echo "? ç¼–è¯‘å®‰è£… circom..."
     git clone https://github.com/iden3/circom.git /tmp/circom
     cd /tmp/circom
     cargo build --release
@@ -60,34 +60,34 @@ if ! command -v circom &> /dev/null; then
     cd - > /dev/null
     rm -rf /tmp/circom
 else
-    echo "? circom ÒÑ°²×°: $(circom --version)"
+    echo "? circom å·²å®‰è£…: $(circom --version)"
 fi
 
-# °²×° snarkjs
-echo "? °²×° snarkjs..."
+# å®‰è£… snarkjs
+echo "? å®‰è£… snarkjs..."
 if ! command -v snarkjs &> /dev/null; then
     npm install -g snarkjs
 else
-    echo "? snarkjs ÒÑ°²×°: $(snarkjs --version)"
+    echo "? snarkjs å·²å®‰è£…: $(snarkjs --version)"
 fi
 
-# °²×°ÏîÄ¿ÒÀÀµ
-echo "? °²×°ÏîÄ¿ÒÀÀµ..."
+# å®‰è£…é¡¹ç›®ä¾èµ–
+echo "? å®‰è£…é¡¹ç›®ä¾èµ–..."
 if [ -f "package.json" ]; then
     npm install
 else
-    echo "??  package.json ²»´æÔÚ£¬Ìø¹ı npm install"
+    echo "??  package.json ä¸å­˜åœ¨ï¼Œè·³è¿‡ npm install"
 fi
 
-# °²×° Python ÒÀÀµ
-echo "? ¼ì²é Python ÒÀÀµ..."
+# å®‰è£… Python ä¾èµ–
+echo "? æ£€æŸ¥ Python ä¾èµ–..."
 python3 -c "import json, subprocess, pathlib, logging" 2>/dev/null || {
-    echo "??  Python ±ê×¼¿âÄ£¿éÕı³£"
+    echo "??  Python æ ‡å‡†åº“æ¨¡å—æ­£å¸¸"
 }
 
-# ÑéÖ¤°²×°
+# éªŒè¯å®‰è£…
 echo ""
-echo "? ÑéÖ¤°²×°..."
+echo "? éªŒè¯å®‰è£…..."
 echo "=================================="
 
 tools=("node" "npm" "circom" "snarkjs" "python3")
@@ -95,30 +95,30 @@ all_good=true
 
 for tool in "${tools[@]}"; do
     if command -v "$tool" &> /dev/null; then
-        version=$($tool --version 2>/dev/null || echo "ÒÑ°²×°")
+        version=$($tool --version 2>/dev/null || echo "å·²å®‰è£…")
         echo "? $tool: $version"
     else
-        echo "? $tool: Î´°²×°"
+        echo "? $tool: æœªå®‰è£…"
         all_good=false
     fi
 done
 
 echo ""
 if [ "$all_good" = true ]; then
-    echo "? »·¾³ÉèÖÃÍê³É!"
+    echo "? ç¯å¢ƒè®¾ç½®å®Œæˆ!"
     echo ""
-    echo "? ½ÓÏÂÀ´µÄ²½Öè:"
-    echo "1. ÔËĞĞÍêÕû²âÊÔ: python3 poseidon2_test.py"
-    echo "2. »òÕßÊÖ¶¯±àÒë: circom poseidon2.circom --r1cs --wasm --sym -o build/"
-    echo "3. ²é¿´°ïÖú: python3 poseidon2_test.py --help"
+    echo "? æ¥ä¸‹æ¥çš„æ­¥éª¤:"
+    echo "1. è¿è¡Œå®Œæ•´æµ‹è¯•: python3 poseidon2_test.py"
+    echo "2. æˆ–è€…æ‰‹åŠ¨ç¼–è¯‘: circom poseidon2.circom --r1cs --wasm --sym -o build/"
+    echo "3. æŸ¥çœ‹å¸®åŠ©: python3 poseidon2_test.py --help"
     echo ""
-    echo "? ÏîÄ¿½á¹¹:"
-    echo "©À©¤©¤ poseidon2.circom       # Circom µçÂ·"
-    echo "©À©¤©¤ poseidon2_test.py      # ²âÊÔ½Å±¾"
-    echo "©À©¤©¤ package.json           # Node.js ÅäÖÃ"
-    echo "©À©¤©¤ setup.sh               # °²×°½Å±¾"
-    echo "©¸©¤©¤ build/                 # ±àÒëÊä³ö"
+    echo "? é¡¹ç›®ç»“æ„:"
+    echo "â”œâ”€â”€ poseidon2.circom       # Circom ç”µè·¯"
+    echo "â”œâ”€â”€ poseidon2_test.py      # æµ‹è¯•è„šæœ¬"
+    echo "â”œâ”€â”€ package.json           # Node.js é…ç½®"
+    echo "â”œâ”€â”€ setup.sh               # å®‰è£…è„šæœ¬"
+    echo "â””â”€â”€ build/                 # ç¼–è¯‘è¾“å‡º"
 else
-    echo "? »·¾³ÉèÖÃÊ§°Ü£¬Çë¼ì²éÉÏÊö´íÎó"
+    echo "? ç¯å¢ƒè®¾ç½®å¤±è´¥ï¼Œè¯·æ£€æŸ¥ä¸Šè¿°é”™è¯¯"
     exit 1
 fi

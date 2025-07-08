@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Poseidon2 ¹şÏ£Ëã·¨ÁãÖªÊ¶Ö¤Ã÷²âÊÔ½Å±¾
-»ùÓÚ Circom ºÍ Groth16 Ğ­Òé
+Poseidon2 å“ˆå¸Œç®—æ³•é›¶çŸ¥è¯†è¯æ˜æµ‹è¯•è„šæœ¬
+åŸºäº Circom å’Œ Groth16 åè®®
 
-Ê¹ÓÃ·½·¨:
+ä½¿ç”¨æ–¹æ³•:
     python poseidon2_test.py
 """
 
@@ -15,7 +15,7 @@ import hashlib
 from pathlib import Path
 import logging
 
-# ÅäÖÃÈÕÖ¾
+# é…ç½®æ—¥å¿—
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
@@ -23,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class Poseidon2ZKProof:
-    """Poseidon2 ÁãÖªÊ¶Ö¤Ã÷ÏµÍ³"""
+    """Poseidon2 é›¶çŸ¥è¯†è¯æ˜ç³»ç»Ÿ"""
     
     def __init__(self, circuit_name="poseidon2", use_t3=True):
         self.circuit_name = circuit_name
@@ -32,13 +32,13 @@ class Poseidon2ZKProof:
         self.setup_directories()
         
     def setup_directories(self):
-        """´´½¨±ØÒªµÄÄ¿Â¼½á¹¹"""
+        """åˆ›å»ºå¿…è¦çš„ç›®å½•ç»“æ„"""
         dirs = ["build", "keys", "proofs", "inputs", "witnesses"]
         for dir_name in dirs:
             (self.project_dir / dir_name).mkdir(exist_ok=True)
             
     def check_dependencies(self):
-        """¼ì²éÒÀÀµ¹¤¾ßÊÇ·ñ°²×°"""
+        """æ£€æŸ¥ä¾èµ–å·¥å…·æ˜¯å¦å®‰è£…"""
         tools = {
             "circom": "Circom compiler",
             "snarkjs": "SnarkJS toolkit", 
@@ -57,20 +57,20 @@ class Poseidon2ZKProof:
                 logger.info(f"? {desc}: {result.stdout.strip()}")
             except (subprocess.CalledProcessError, FileNotFoundError):
                 missing.append(tool)
-                logger.error(f"? {desc} Î´°²×°")
+                logger.error(f"? {desc} æœªå®‰è£…")
                 
         if missing:
-            logger.error(f"Çë°²×°È±Ê§µÄ¹¤¾ß: {', '.join(missing)}")
-            logger.info("°²×°ÃüÁî:")
+            logger.error(f"è¯·å®‰è£…ç¼ºå¤±çš„å·¥å…·: {', '.join(missing)}")
+            logger.info("å®‰è£…å‘½ä»¤:")
             logger.info("npm install -g circom snarkjs")
             return False
             
         return True
         
     def compile_circuit(self):
-        """±àÒë Circom µçÂ·"""
+        """ç¼–è¯‘ Circom ç”µè·¯"""
         try:
-            logger.info("? ±àÒë Circom µçÂ·...")
+            logger.info("? ç¼–è¯‘ Circom ç”µè·¯...")
             
             cmd = [
                 "circom",
@@ -89,36 +89,36 @@ class Poseidon2ZKProof:
             )
             
             if result.returncode != 0:
-                logger.error(f"±àÒëÊ§°Ü: {result.stderr}")
+                logger.error(f"ç¼–è¯‘å¤±è´¥: {result.stderr}")
                 return False
                 
-            logger.info("? µçÂ·±àÒë³É¹¦")
+            logger.info("? ç”µè·¯ç¼–è¯‘æˆåŠŸ")
             
-            # ¼ì²éÉú³ÉµÄÎÄ¼ş
+            # æ£€æŸ¥ç”Ÿæˆçš„æ–‡ä»¶
             r1cs_file = self.project_dir / "build" / f"{self.circuit_name}.r1cs"
             wasm_file = self.project_dir / "build" / f"{self.circuit_name}_js" / f"{self.circuit_name}.wasm"
             
             if r1cs_file.exists() and wasm_file.exists():
-                logger.info(f"? R1CSÎÄ¼ş: {r1cs_file}")
-                logger.info(f"? WASMÎÄ¼ş: {wasm_file}")
+                logger.info(f"? R1CSæ–‡ä»¶: {r1cs_file}")
+                logger.info(f"? WASMæ–‡ä»¶: {wasm_file}")
                 return True
             else:
-                logger.error("Éú³ÉµÄÎÄ¼ş²»ÍêÕû")
+                logger.error("ç”Ÿæˆçš„æ–‡ä»¶ä¸å®Œæ•´")
                 return False
                 
         except Exception as e:
-            logger.error(f"±àÒëÒì³£: {e}")
+            logger.error(f"ç¼–è¯‘å¼‚å¸¸: {e}")
             return False
             
     def generate_test_input(self):
-        """Éú³É²âÊÔÊäÈëÊı¾İ"""
+        """ç”Ÿæˆæµ‹è¯•è¾“å…¥æ•°æ®"""
         if self.use_t3:
-            # t=3 °æ±¾: 2¸öÊäÈëÔªËØ
+            # t=3 ç‰ˆæœ¬: 2ä¸ªè¾“å…¥å…ƒç´ 
             preimage = [12345, 67890]
-            # Ä£Äâ¹şÏ£Öµ (Êµ¼ÊÓ¦¸ÃÓÃÕæÕıµÄPoseidon2¼ÆËã)
+            # æ¨¡æ‹Ÿå“ˆå¸Œå€¼ (å®é™…åº”è¯¥ç”¨çœŸæ­£çš„Poseidon2è®¡ç®—)
             hash_value = 998877665544332211
         else:
-            # t=2 °æ±¾: 1¸öÊäÈëÔªËØ  
+            # t=2 ç‰ˆæœ¬: 1ä¸ªè¾“å…¥å…ƒç´   
             preimage = [12345]
             hash_value = 123456789012345678
             
@@ -131,16 +131,16 @@ class Poseidon2ZKProof:
         with open(input_file, 'w') as f:
             json.dump(input_data, f, indent=2)
             
-        logger.info(f"? ²âÊÔÊäÈëÒÑÉú³É: {input_file}")
-        logger.info(f"   ¹şÏ£Öµ: {hash_value}")
-        logger.info(f"   Ô­Ïó: {preimage}")
+        logger.info(f"? æµ‹è¯•è¾“å…¥å·²ç”Ÿæˆ: {input_file}")
+        logger.info(f"   å“ˆå¸Œå€¼: {hash_value}")
+        logger.info(f"   åŸè±¡: {preimage}")
         
         return input_file
         
     def generate_witness(self, input_file):
-        """Éú³ÉÖ¤ÈËÎÄ¼ş"""
+        """ç”Ÿæˆè¯äººæ–‡ä»¶"""
         try:
-            logger.info("? Éú³ÉÖ¤ÈËÎÄ¼ş...")
+            logger.info("? ç”Ÿæˆè¯äººæ–‡ä»¶...")
             
             witness_file = self.project_dir / "witnesses" / "witness.wtns"
             
@@ -160,21 +160,21 @@ class Poseidon2ZKProof:
             )
             
             if result.returncode != 0:
-                logger.error(f"Éú³ÉÖ¤ÈËÊ§°Ü: {result.stderr}")
+                logger.error(f"ç”Ÿæˆè¯äººå¤±è´¥: {result.stderr}")
                 return False
                 
-            logger.info("? Ö¤ÈËÉú³É³É¹¦")
-            logger.info(f"? Ö¤ÈËÎÄ¼ş: {witness_file}")
+            logger.info("? è¯äººç”ŸæˆæˆåŠŸ")
+            logger.info(f"? è¯äººæ–‡ä»¶: {witness_file}")
             return True
             
         except Exception as e:
-            logger.error(f"Éú³ÉÖ¤ÈËÒì³£: {e}")
+            logger.error(f"ç”Ÿæˆè¯äººå¼‚å¸¸: {e}")
             return False
             
     def trusted_setup(self):
-        """Ö´ĞĞ¿ÉĞÅÉèÖÃ"""
+        """æ‰§è¡Œå¯ä¿¡è®¾ç½®"""
         try:
-            logger.info("? Ö´ĞĞ¿ÉĞÅÉèÖÃ...")
+            logger.info("? æ‰§è¡Œå¯ä¿¡è®¾ç½®...")
             
             # Phase 1: Powers of Tau
             logger.info("Phase 1: Powers of Tau ceremony...")
@@ -185,24 +185,24 @@ class Poseidon2ZKProof:
                 "pot12_final.ptau"
             ]
             
-            # ¼ì²éÊÇ·ñÒÑ´æÔÚ
+            # æ£€æŸ¥æ˜¯å¦å·²å­˜åœ¨
             if all((self.project_dir / f).exists() for f in ptau_files):
-                logger.info("Powers of Tau ÎÄ¼şÒÑ´æÔÚ£¬Ìø¹ıÉú³É")
+                logger.info("Powers of Tau æ–‡ä»¶å·²å­˜åœ¨ï¼Œè·³è¿‡ç”Ÿæˆ")
             else:
-                # Éú³É³õÊ¼Powers of Tau
+                # ç”Ÿæˆåˆå§‹Powers of Tau
                 subprocess.run([
                     "snarkjs", "powersoftau", "new", "bn128", "12",
                     "pot12_0000.ptau", "-v"
                 ], cwd=self.project_dir, check=True)
                 
-                # µÚÒ»´Î¹±Ï×
+                # ç¬¬ä¸€æ¬¡è´¡çŒ®
                 subprocess.run([
                     "snarkjs", "powersoftau", "contribute", 
                     "pot12_0000.ptau", "pot12_0001.ptau",
                     "--name=First contribution", "-v"
                 ], cwd=self.project_dir, check=True)
                 
-                # ×¼±¸Phase 2
+                # å‡†å¤‡Phase 2
                 subprocess.run([
                     "snarkjs", "powersoftau", "prepare", "phase2",
                     "pot12_0001.ptau", "pot12_final.ptau", "-v"
@@ -218,7 +218,7 @@ class Poseidon2ZKProof:
             ]
             
             if all((self.project_dir / f).exists() for f in zkey_files):
-                logger.info("µçÂ·ÃÜÔ¿ÒÑ´æÔÚ£¬Ìø¹ıÉú³É")
+                logger.info("ç”µè·¯å¯†é’¥å·²å­˜åœ¨ï¼Œè·³è¿‡ç”Ÿæˆ")
             else:
                 # Groth16 setup
                 subprocess.run([
@@ -228,7 +228,7 @@ class Poseidon2ZKProof:
                     f"keys/{self.circuit_name}_0000.zkey"
                 ], cwd=self.project_dir, check=True)
                 
-                # µÚ¶ş´Î¹±Ï×
+                # ç¬¬äºŒæ¬¡è´¡çŒ®
                 subprocess.run([
                     "snarkjs", "zkey", "contribute",
                     f"keys/{self.circuit_name}_0000.zkey",
@@ -236,27 +236,27 @@ class Poseidon2ZKProof:
                     "--name=Second contribution", "-v"
                 ], cwd=self.project_dir, check=True)
                 
-                # µ¼³öÑéÖ¤ÃÜÔ¿
+                # å¯¼å‡ºéªŒè¯å¯†é’¥
                 subprocess.run([
                     "snarkjs", "zkey", "export", "verificationkey",
                     f"keys/{self.circuit_name}_0001.zkey",
                     "keys/verification_key.json"
                 ], cwd=self.project_dir, check=True)
                 
-            logger.info("? ¿ÉĞÅÉèÖÃÍê³É")
+            logger.info("? å¯ä¿¡è®¾ç½®å®Œæˆ")
             return True
             
         except subprocess.CalledProcessError as e:
-            logger.error(f"¿ÉĞÅÉèÖÃÊ§°Ü: {e}")
+            logger.error(f"å¯ä¿¡è®¾ç½®å¤±è´¥: {e}")
             return False
         except Exception as e:
-            logger.error(f"¿ÉĞÅÉèÖÃÒì³£: {e}")
+            logger.error(f"å¯ä¿¡è®¾ç½®å¼‚å¸¸: {e}")
             return False
             
     def generate_proof(self):
-        """Éú³É Groth16 Ö¤Ã÷"""
+        """ç”Ÿæˆ Groth16 è¯æ˜"""
         try:
-            logger.info("? Éú³É Groth16 Ö¤Ã÷...")
+            logger.info("? ç”Ÿæˆ Groth16 è¯æ˜...")
             
             cmd = [
                 "snarkjs", "groth16", "prove",
@@ -274,31 +274,31 @@ class Poseidon2ZKProof:
             )
             
             if result.returncode != 0:
-                logger.error(f"Éú³ÉÖ¤Ã÷Ê§°Ü: {result.stderr}")
+                logger.error(f"ç”Ÿæˆè¯æ˜å¤±è´¥: {result.stderr}")
                 return False
                 
-            logger.info("? Ö¤Ã÷Éú³É³É¹¦")
+            logger.info("? è¯æ˜ç”ŸæˆæˆåŠŸ")
             
-            # ÏÔÊ¾Ö¤Ã÷ĞÅÏ¢
+            # æ˜¾ç¤ºè¯æ˜ä¿¡æ¯
             proof_file = self.project_dir / "proofs" / "proof.json"
             public_file = self.project_dir / "proofs" / "public.json"
             
             if proof_file.exists() and public_file.exists():
                 proof_size = proof_file.stat().st_size
                 public_size = public_file.stat().st_size
-                logger.info(f"? Ö¤Ã÷ÎÄ¼ş: {proof_file} ({proof_size} bytes)")
-                logger.info(f"? ¹«¿ªÊäÈë: {public_file} ({public_size} bytes)")
+                logger.info(f"? è¯æ˜æ–‡ä»¶: {proof_file} ({proof_size} bytes)")
+                logger.info(f"? å…¬å¼€è¾“å…¥: {public_file} ({public_size} bytes)")
                 
             return True
             
         except Exception as e:
-            logger.error(f"Éú³ÉÖ¤Ã÷Òì³£: {e}")
+            logger.error(f"ç”Ÿæˆè¯æ˜å¼‚å¸¸: {e}")
             return False
             
     def verify_proof(self):
-        """ÑéÖ¤Ö¤Ã÷"""
+        """éªŒè¯è¯æ˜"""
         try:
-            logger.info("? ÑéÖ¤Ö¤Ã÷...")
+            logger.info("? éªŒè¯è¯æ˜...")
             
             cmd = [
                 "snarkjs", "groth16", "verify",
@@ -315,114 +315,114 @@ class Poseidon2ZKProof:
             )
             
             if result.returncode == 0:
-                logger.info("? Ö¤Ã÷ÑéÖ¤³É¹¦! ?")
+                logger.info("? è¯æ˜éªŒè¯æˆåŠŸ! ?")
                 return True
             else:
-                logger.error(f"? Ö¤Ã÷ÑéÖ¤Ê§°Ü: {result.stderr}")
+                logger.error(f"? è¯æ˜éªŒè¯å¤±è´¥: {result.stderr}")
                 return False
                 
         except Exception as e:
-            logger.error(f"ÑéÖ¤Ö¤Ã÷Òì³£: {e}")
+            logger.error(f"éªŒè¯è¯æ˜å¼‚å¸¸: {e}")
             return False
             
     def show_circuit_info(self):
-        """ÏÔÊ¾µçÂ·ĞÅÏ¢"""
+        """æ˜¾ç¤ºç”µè·¯ä¿¡æ¯"""
         try:
-            logger.info("? µçÂ·ĞÅÏ¢:")
+            logger.info("? ç”µè·¯ä¿¡æ¯:")
             
-            # ÏÔÊ¾R1CSÔ¼ÊøÊıÁ¿
+            # æ˜¾ç¤ºR1CSçº¦æŸæ•°é‡
             r1cs_file = self.project_dir / "build" / f"{self.circuit_name}.r1cs"
             if r1cs_file.exists():
-                # ¼òµ¥¹ÀËãÔ¼ÊøÊıÁ¿ (Êµ¼ÊĞèÒª½âÎöR1CSÎÄ¼ş)
+                # ç®€å•ä¼°ç®—çº¦æŸæ•°é‡ (å®é™…éœ€è¦è§£æR1CSæ–‡ä»¶)
                 size = r1cs_file.stat().st_size
-                estimated_constraints = size // 32  # ´ÖÂÔ¹ÀËã
-                logger.info(f"  R1CSÎÄ¼ş´óĞ¡: {size} bytes")
-                logger.info(f"  ¹ÀËãÔ¼ÊøÊıÁ¿: ~{estimated_constraints}")
+                estimated_constraints = size // 32  # ç²—ç•¥ä¼°ç®—
+                logger.info(f"  R1CSæ–‡ä»¶å¤§å°: {size} bytes")
+                logger.info(f"  ä¼°ç®—çº¦æŸæ•°é‡: ~{estimated_constraints}")
                 
-            # ÏÔÊ¾ÃÜÔ¿ÎÄ¼ş´óĞ¡
+            # æ˜¾ç¤ºå¯†é’¥æ–‡ä»¶å¤§å°
             vk_file = self.project_dir / "keys" / "verification_key.json"
             if vk_file.exists():
                 with open(vk_file, 'r') as f:
                     vk_data = json.load(f)
-                logger.info(f"  ÑéÖ¤ÃÜÔ¿´óĞ¡: {vk_file.stat().st_size} bytes")
+                logger.info(f"  éªŒè¯å¯†é’¥å¤§å°: {vk_file.stat().st_size} bytes")
                 
         except Exception as e:
-            logger.error(f"ÏÔÊ¾µçÂ·ĞÅÏ¢Òì³£: {e}")
+            logger.error(f"æ˜¾ç¤ºç”µè·¯ä¿¡æ¯å¼‚å¸¸: {e}")
             
     def run_full_test(self):
-        """ÔËĞĞÍêÕû²âÊÔÁ÷³Ì"""
+        """è¿è¡Œå®Œæ•´æµ‹è¯•æµç¨‹"""
         logger.info("=" * 60)
-        logger.info("? Poseidon2 ÁãÖªÊ¶Ö¤Ã÷²âÊÔ")
-        logger.info(f"? Ê¹ÓÃ²ÎÊı: t={'3' if self.use_t3 else '2'}, d=5")
+        logger.info("? Poseidon2 é›¶çŸ¥è¯†è¯æ˜æµ‹è¯•")
+        logger.info(f"? ä½¿ç”¨å‚æ•°: t={'3' if self.use_t3 else '2'}, d=5")
         logger.info("=" * 60)
         
-        # ²âÊÔ²½Öè
+        # æµ‹è¯•æ­¥éª¤
         steps = [
-            ("¼ì²éÒÀÀµ", self.check_dependencies),
-            ("±àÒëµçÂ·", self.compile_circuit),
-            ("Éú³É²âÊÔÊäÈë", self.generate_test_input),
-            ("Éú³ÉÖ¤ÈË", lambda: self.generate_witness(self.generate_test_input())),
-            ("¿ÉĞÅÉèÖÃ", self.trusted_setup),
-            ("Éú³ÉÖ¤Ã÷", self.generate_proof),
-            ("ÑéÖ¤Ö¤Ã÷", self.verify_proof),
-            ("ÏÔÊ¾ĞÅÏ¢", self.show_circuit_info)
+            ("æ£€æŸ¥ä¾èµ–", self.check_dependencies),
+            ("ç¼–è¯‘ç”µè·¯", self.compile_circuit),
+            ("ç”Ÿæˆæµ‹è¯•è¾“å…¥", self.generate_test_input),
+            ("ç”Ÿæˆè¯äºº", lambda: self.generate_witness(self.generate_test_input())),
+            ("å¯ä¿¡è®¾ç½®", self.trusted_setup),
+            ("ç”Ÿæˆè¯æ˜", self.generate_proof),
+            ("éªŒè¯è¯æ˜", self.verify_proof),
+            ("æ˜¾ç¤ºä¿¡æ¯", self.show_circuit_info)
         ]
         
         for step_name, step_func in steps:
             logger.info(f"\n? {step_name}...")
             
             try:
-                if step_name == "Éú³É²âÊÔÊäÈë":
+                if step_name == "ç”Ÿæˆæµ‹è¯•è¾“å…¥":
                     input_file = step_func()
                     if not input_file:
-                        logger.error(f"? {step_name} Ê§°Ü")
+                        logger.error(f"? {step_name} å¤±è´¥")
                         return False
-                elif step_name == "Éú³ÉÖ¤ÈË":
+                elif step_name == "ç”Ÿæˆè¯äºº":
                     if not self.generate_witness(input_file):
-                        logger.error(f"? {step_name} Ê§°Ü")
+                        logger.error(f"? {step_name} å¤±è´¥")
                         return False
                 else:
                     if not step_func():
-                        logger.error(f"? {step_name} Ê§°Ü")
+                        logger.error(f"? {step_name} å¤±è´¥")
                         return False
                         
-                logger.info(f"? {step_name} Íê³É")
+                logger.info(f"? {step_name} å®Œæˆ")
                 
             except Exception as e:
-                logger.error(f"? {step_name} Òì³£: {e}")
+                logger.error(f"? {step_name} å¼‚å¸¸: {e}")
                 return False
                 
         logger.info("\n" + "=" * 60)
-        logger.info("? ËùÓĞ²âÊÔ²½ÖèÍê³É!")
-        logger.info("? Poseidon2 ÁãÖªÊ¶Ö¤Ã÷ÏµÍ³ÔËĞĞ³É¹¦!")
+        logger.info("? æ‰€æœ‰æµ‹è¯•æ­¥éª¤å®Œæˆ!")
+        logger.info("? Poseidon2 é›¶çŸ¥è¯†è¯æ˜ç³»ç»Ÿè¿è¡ŒæˆåŠŸ!")
         logger.info("=" * 60)
         
         return True
 
 def main():
-    """Ö÷º¯Êı"""
+    """ä¸»å‡½æ•°"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='Poseidon2 ÁãÖªÊ¶Ö¤Ã÷²âÊÔ')
-    parser.add_argument('--t2', action='store_true', help='Ê¹ÓÃ t=2 °æ±¾ (Ä¬ÈÏ t=3)')
-    parser.add_argument('--circuit', default='poseidon2', help='µçÂ·Ãû³Æ')
+    parser = argparse.ArgumentParser(description='Poseidon2 é›¶çŸ¥è¯†è¯æ˜æµ‹è¯•')
+    parser.add_argument('--t2', action='store_true', help='ä½¿ç”¨ t=2 ç‰ˆæœ¬ (é»˜è®¤ t=3)')
+    parser.add_argument('--circuit', default='poseidon2', help='ç”µè·¯åç§°')
     
     args = parser.parse_args()
     
-    # ´´½¨²âÊÔÊµÀı
+    # åˆ›å»ºæµ‹è¯•å®ä¾‹
     prover = Poseidon2ZKProof(
         circuit_name=args.circuit,
         use_t3=not args.t2
     )
     
-    # ÔËĞĞ²âÊÔ
+    # è¿è¡Œæµ‹è¯•
     success = prover.run_full_test()
     
     if success:
-        logger.info("? ²âÊÔÍê³É!")
+        logger.info("? æµ‹è¯•å®Œæˆ!")
         sys.exit(0)
     else:
-        logger.error("? ²âÊÔÊ§°Ü!")
+        logger.error("? æµ‹è¯•å¤±è´¥!")
         sys.exit(1)
 
 if __name__ == "__main__":
