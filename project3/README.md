@@ -2,17 +2,17 @@
 
 基于 Circom 和 Groth16 协议的 Poseidon2 哈希算法零知识证明系统。
 
-## ? 项目概述
+##  项目概述
 
 本项目实现了 Poseidon2 哈希算法的零知识证明电路，支持以下特性：
 
-- ? **Poseidon2 哈希算法**：基于论文 [Poseidon2: A Fast and Secure Hash Function](https://eprint.iacr.org/2023/323.pdf)
-- ? **参数配置**：支持 (n,t,d) = (256,3,5) 和 (256,2,5) 两种配置
-- ? **零知识证明**：证明知道某个哈希值的原象，而不泄露原象本身
-- ? **Groth16 协议**：使用 Groth16 zk-SNARK 协议生成简洁证明
-- ? **完整工具链**：从电路编译到证明验证的完整流程
+-  **Poseidon2 哈希算法**：基于论文 [Poseidon2: A Fast and Secure Hash Function](https://eprint.iacr.org/2023/323.pdf)
+-  **参数配置**：支持 (n,t,d) = (256,3,5) 和 (256,2,5) 两种配置
+-  **零知识证明**：证明知道某个哈希值的原象，而不泄露原象本身
+-  **Groth16 协议**：使用 Groth16 zk-SNARK 协议生成简洁证明
+-  **完整工具链**：从电路编译到证明验证的完整流程
 
-## ?? 项目结构
+##  项目结构
 
 ```
 project3/
@@ -27,7 +27,7 @@ project3/
     └── poseidon2_js/          # JavaScript 接口
 ```
 
-## ? 快速开始
+##  快速开始
 
 ### 1. 环境设置
 
@@ -105,7 +105,7 @@ snarkjs groth16 prove keys/poseidon2_0001.zkey witnesses/witness.wtns proofs/pro
 snarkjs groth16 verify keys/verification_key.json proofs/public.json proofs/proof.json
 ```
 
-## ? 技术细节
+##  技术细节
 
 ### Poseidon2 算法参数
 
@@ -138,7 +138,7 @@ template Poseidon2ProofT3()   // 零知识证明电路
 约束：hash === Poseidon2(preimage)
 ```
 
-## ? 性能指标
+##  性能指标
 
 以下是典型的性能指标（具体数值取决于硬件和参数）：
 
@@ -149,50 +149,50 @@ template Poseidon2ProofT3()   // 零知识证明电路
 | 验证时间 | <100ms | <100ms |
 | 证明大小 | 128 字节 | 128 字节 |
 
-## ? 测试示例
+##  测试示例
 
 成功运行后，你会看到类似的输出：
 
 ```
-? Poseidon2 零知识证明测试
-? 使用参数: t=3, d=5
+ Poseidon2 零知识证明测试
+ 使用参数: t=3, d=5
 ============================================================
 
-? 检查依赖...
-? Circom compiler: circom 2.1.6
-? SnarkJS toolkit: snarkjs 0.6.11
-? Node.js runtime: v18.17.0
+ 检查依赖...
+ Circom compiler: circom 2.1.6
+ SnarkJS toolkit: snarkjs 0.6.11
+ Node.js runtime: v18.17.0
 
-? 编译电路...
-? 电路编译成功
+ 编译电路...
+ 电路编译成功
 
-? 生成测试输入...
-? 测试输入已生成: inputs/input.json
+ 生成测试输入...
+ 测试输入已生成: inputs/input.json
    哈希值: 998877665544332211
    原象: [12345, 67890]
 
-? 生成证人...
-? 证人生成成功
+ 生成证人...
+ 证人生成成功
 
-? 可信设置...
-? 可信设置完成
+ 可信设置...
+ 可信设置完成
 
-? 生成证明...
-? 证明生成成功
+ 生成证明...
+ 证明生成成功
 
-? 验证证明...
-? 证明验证成功! ?
+ 验证证明...
+ 证明验证成功! 
 
-? 显示信息...
-? 电路信息:
+ 显示信息...
+ 电路信息:
   R1CS文件大小: 245760 bytes
   估算约束数量: ~7680
 
-? 所有测试步骤完成!
-? Poseidon2 零知识证明系统运行成功!
+ 所有测试步骤完成!
+ Poseidon2 零知识证明系统运行成功!
 ```
 
-## ? 生成的文件
+##  生成的文件
 
 运行完成后，会生成以下文件：
 
@@ -221,16 +221,16 @@ witnesses/
 └── witness.wtns                     # 证人文件
 ```
 
-## ? 安全考虑
+##  安全考虑
 
-?? **重要提醒**：
+ **重要提醒**：
 
 1. **轮常数**：当前实现使用简化的轮常数，生产环境必须使用论文规范的官方常数
 2. **MDS矩阵**：使用了简化的MDS矩阵，实际应用需要使用经过优化的安全矩阵
 3. **可信设置**：Groth16需要可信设置，生产环境应使用大型仪式生成的参数
 4. **代码审计**：这是演示实现，生产使用需要完整的安全审计
 
-## ?? 故障排除
+##  故障排除
 
 ### 常见问题
 
@@ -276,7 +276,7 @@ export LOG_LEVEL=DEBUG
 python3 poseidon2_test.py
 ```
 
-## ? 参考资料
+##  参考资料
 
 1. [Poseidon2 论文](https://eprint.iacr.org/2023/323.pdf)
 2. [Circom 官方文档](https://docs.circom.io/)
@@ -284,21 +284,8 @@ python3 poseidon2_test.py
 4. [Groth16 论文](https://eprint.iacr.org/2016/260.pdf)
 5. [ZK-SNARKs 入门](https://zkp.science/)
 
-## ? 贡献指南
 
-欢迎提交 Issue 和 Pull Request！
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 创建 Pull Request
-
-## ? 许可证
-
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
-
-## ? 致谢
+##  致谢
 
 感谢以下开源项目：
 
