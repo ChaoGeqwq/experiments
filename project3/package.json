@@ -1,0 +1,36 @@
+{
+  "name": "poseidon2-zkp-circuit",
+  "version": "1.0.0",
+  "description": "Poseidon2 hash function zero-knowledge proof circuit implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "python poseidon2_test.py",
+    "compile": "circom poseidon2.circom --r1cs --wasm --sym -o build/",
+    "setup": "python poseidon2_test.py",
+    "clean": "rm -rf build/ keys/ proofs/ inputs/ witnesses/ *.ptau"
+  },
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.6.11"
+  },
+  "devDependencies": {
+    "circom_tester": "^0.0.17"
+  },
+  "keywords": [
+    "circom",
+    "zero-knowledge",
+    "poseidon2",
+    "hash",
+    "groth16",
+    "zk-snark"
+  ],
+  "author": "ZK Developer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/poseidon2-zkp"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
