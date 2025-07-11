@@ -188,6 +188,8 @@ string SM3(const vector<uint8_t>& message) {
     return ss.str();
 }
 
+
+
 int main() {
     // 输入消息
     string input = "abc";
