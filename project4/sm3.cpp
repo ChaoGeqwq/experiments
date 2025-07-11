@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// ³£Á¿³õÊ¼»¯
+// å¸¸é‡åˆå§‹åŒ–
 const uint32_t IV[8] = {
     0x7380166F, 0x4914B2B9, 0x172442D7, 0xDA8A0600,
     0xA96F30BC, 0x163138AA, 0xE38DEE4D, 0xB0FB0E4E
@@ -29,45 +29,45 @@ const uint32_t T[64] = {
     0x7A879D8A, 0x7A879D8A, 0x7A879D8A, 0x7A879D8A
 };
 
-// Ñ­»·×óÒÆ
+// å¾ªç¯å·¦ç§»
 uint32_t rotateLeft(uint32_t x, int n) {
     return (x << n) | (x >> (32 - n));
 }
 
-// ²¼¶ûº¯ÊıFF
+// å¸ƒå°”å‡½æ•°FF
 uint32_t FF(uint32_t x, uint32_t y, uint32_t z, int j) {
     return (j < 16) ? (x ^ y ^ z) : ((x & y) | (x & z) | (y & z));
 }
 
-// ²¼¶ûº¯ÊıGG
+// å¸ƒå°”å‡½æ•°GG
 uint32_t GG(uint32_t x, uint32_t y, uint32_t z, int j) {
     return (j < 16) ? (x ^ y ^ z) : ((x & y) | (~x & z));
 }
 
-// Ñ¹Ëõº¯ÊıP0
+// å‹ç¼©å‡½æ•°P0
 uint32_t P0(uint32_t x) {
     return x ^ rotateLeft(x, 9) ^ rotateLeft(x, 17);
 }
 
-// Ñ¹Ëõº¯ÊıP1
+// å‹ç¼©å‡½æ•°P1
 uint32_t P1(uint32_t x) {
     return x ^ rotateLeft(x, 15) ^ rotateLeft(x, 23);
 }
 
-// Ìî³äÏûÏ¢
+// å¡«å……æ¶ˆæ¯
 vector<uint8_t> padding(const vector<uint8_t>& message) {
     vector<uint8_t> paddedMessage = message;
     size_t originalBitLength = message.size() * 8;
 
-    // Ìí¼ÓÒ»¸ö1Î»
+    // æ·»åŠ ä¸€ä¸ª1ä½
     paddedMessage.push_back(0x80);
 
-    // Ìî³ä0Ö±µ½³¤¶ÈÂú×ãÌõ¼ş
+    // å¡«å……0ç›´åˆ°é•¿åº¦æ»¡è¶³æ¡ä»¶
     while ((paddedMessage.size() * 8) % 512 != 448) {
         paddedMessage.push_back(0x00);
     }
 
-    // Ìí¼ÓÔ­Ê¼ÏûÏ¢³¤¶È
+    // æ·»åŠ åŸå§‹æ¶ˆæ¯é•¿åº¦
     for (int i = 7; i >= 0; --i) {
         paddedMessage.push_back((originalBitLength >> (i * 8)) & 0xFF);
     }
@@ -75,36 +75,36 @@ vector<uint8_t> padding(const vector<uint8_t>& message) {
     return paddedMessage;
 }
 
-// ÏûÏ¢À©Õ¹
+// æ¶ˆæ¯æ‰©å±•
 vector<uint32_t> messageExpansion(const vector<uint8_t>& block) {
     vector<uint32_t> W(68);
     vector<uint32_t> W1(64);
 
-    // ½«ÏûÏ¢·Ö×éÎª16¸ö×Ö
+    // å°†æ¶ˆæ¯åˆ†ç»„ä¸º16ä¸ªå­—
     for (int i = 0; i < 16; ++i) {
         W[i] = (block[i * 4] << 24) | (block[i * 4 + 1] << 16) |
                (block[i * 4 + 2] << 8) | block[i * 4 + 3];
     }
 
-    // À©Õ¹ÏûÏ¢
+    // æ‰©å±•æ¶ˆæ¯
     for (int i = 16; i < 68; ++i) {
         W[i] = P1(W[i - 16] ^ W[i - 9] ^ rotateLeft(W[i - 3], 15)) ^
                rotateLeft(W[i - 13], 7) ^ W[i - 6];
     }
 
-    // ¼ÆËãW1
+    // è®¡ç®—W1
     for (int i = 0; i < 64; ++i) {
         W1[i] = W[i] ^ W[i + 4];
     }
 
-    // ´òÓ¡À©Õ¹ºóµÄÏûÏ¢
-    cout << "À©Õ¹ºóµÄÏûÏ¢W: ";
+    // æ‰“å°æ‰©å±•åçš„æ¶ˆæ¯
+    cout << "æ‰©å±•åçš„æ¶ˆæ¯W: ";
     for (int i = 0; i < 68; ++i) {
         cout << hex << setw(8) << setfill('0') << W[i] << " ";
     }
     cout << endl;
 
-    cout << "À©Õ¹ºóµÄÏûÏ¢W1: ";
+    cout << "æ‰©å±•åçš„æ¶ˆæ¯W1: ";
     for (int i = 0; i < 64; ++i) {
         cout << hex << setw(8) << setfill('0') << W1[i] << " ";
     }
@@ -113,13 +113,13 @@ vector<uint32_t> messageExpansion(const vector<uint8_t>& block) {
     return W;
 }
 
-// Ñ¹Ëõº¯Êı
+// å‹ç¼©å‡½æ•°
 void CF(vector<uint32_t>& V, const vector<uint32_t>& W) {
     uint32_t A = V[0], B = V[1], C = V[2], D = V[3];
     uint32_t E = V[4], F = V[5], G = V[6], H = V[7];
 
     vector<uint32_t> W1(64);
-    // ¼ÆËãW1
+    // è®¡ç®—W1
     for (int i = 0; i < 64; ++i) {
         W1[i] = W[i] ^ W[i + 4];
     }
@@ -138,8 +138,8 @@ void CF(vector<uint32_t>& V, const vector<uint32_t>& W) {
         F = E;
         E = P0(TT2);
 
-        // Êä³öµü´úÑ¹ËõµÄÖĞ¼äÖµ
-        cout << "µü´úÑ¹ËõÖĞ¼äÖµ j=" << dec << j << ": ";
+        // è¾“å‡ºè¿­ä»£å‹ç¼©çš„ä¸­é—´å€¼
+        cout << "è¿­ä»£å‹ç¼©ä¸­é—´å€¼ j=" << dec << j << ": ";
         cout << hex << setw(8) << setfill('0') << A << " "
              << hex << setw(8) << setfill('0') << B << " "
              << hex << setw(8) << setfill('0') << C << " "
@@ -160,12 +160,12 @@ void CF(vector<uint32_t>& V, const vector<uint32_t>& W) {
     V[7] ^= H;
 }
 
-// SM3¹şÏ£º¯Êı
+// SM3å“ˆå¸Œå‡½æ•°
 string SM3(const vector<uint8_t>& message) {
     vector<uint8_t> paddedMessage = padding(message);
 
-    // ´òÓ¡Ìî³äºóµÄÏûÏ¢
-    cout << "Ìî³äºóµÄÏûÏ¢: ";
+    // æ‰“å°å¡«å……åçš„æ¶ˆæ¯
+    cout << "å¡«å……åçš„æ¶ˆæ¯: ";
     for (uint8_t byte : paddedMessage) {
         cout << hex << setw(2) << setfill('0') << (int)byte;
     }
@@ -173,14 +173,14 @@ string SM3(const vector<uint8_t>& message) {
 
     vector<uint32_t> V(IV, IV + 8);
 
-    // ·Ö×é´¦Àí
+    // åˆ†ç»„å¤„ç†
     for (size_t i = 0; i < paddedMessage.size(); i += 64) {
         vector<uint8_t> block(paddedMessage.begin() + i, paddedMessage.begin() + i + 64);
         vector<uint32_t> W = messageExpansion(block);
         CF(V, W);
     }
 
-    // Êä³ö×îÖÕµÄÔÓ´ÕÖµ
+    // è¾“å‡ºæœ€ç»ˆçš„æ‚å‡‘å€¼
     stringstream ss;
     for (uint32_t v : V) {
         ss << hex << setw(8) << setfill('0') << v;
@@ -189,15 +189,15 @@ string SM3(const vector<uint8_t>& message) {
 }
 
 int main() {
-    // ÊäÈëÏûÏ¢
+    // è¾“å…¥æ¶ˆæ¯
     string input = "abc";
     vector<uint8_t> message(input.begin(), input.end());
 
-    // ¼ÆËãSM3¹şÏ£Öµ
+    // è®¡ç®—SM3å“ˆå¸Œå€¼
     string hash = SM3(message);
 
-    // Êä³ö×îÖÕµÄ¹şÏ£Öµ
-    cout << "×îÖÕµÄÔÓ´ÕÖµ: " << hash << endl;
+    // è¾“å‡ºæœ€ç»ˆçš„å“ˆå¸Œå€¼
+    cout << "æœ€ç»ˆçš„æ‚å‡‘å€¼: " << hash << endl;
 
     return 0;
 }
