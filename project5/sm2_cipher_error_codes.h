@@ -1,12 +1,3 @@
-/**************************************************
-* File name: sm2_cipher_error_codes.h
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Dec 9th, 2018
-* Description: define error codes used in SM2
-    computation functions
-**************************************************/
-
 #ifndef HEADER_ERROR_CODES_LIST_OF_SM2_CIPHER_H
   #define HEADER_ERROR_CODES_LIST_OF_SM2_CIPHER_H
 

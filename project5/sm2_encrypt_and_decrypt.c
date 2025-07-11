@@ -1,12 +1,3 @@
-/**************************************************
-* File name: sm2_encrypt_and_decrypt.c
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Dec 8th, 2018
-* Description: implement SM2 encrypt data and decrypt
-    ciphertext functions
-**************************************************/
-
 #include <string.h>
 #include <openssl/obj_mac.h>
 #include <openssl/evp.h>

@@ -1,12 +1,3 @@
-/**************************************************
-* File name: test_sm2_encrypt_and_decrypt.h
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Dec 9th, 2018
-* Description: declare SM2 encrypt data and decrypt
-    ciphertext test functions
-**************************************************/
-
 #ifndef HEADER_SM2_ENCRYPT_DATA_AND_DECRYPT_CIPHERTEXT_TEST_H
   #define HEADER_SM2_ENCRYPT_DATA_AND_DECRYPT_CIPHERTEXT_TEST_H
 

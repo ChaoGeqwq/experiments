@@ -1,12 +1,3 @@
-/**************************************************
-* File name: test_demo.c
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Dec 9th, 2018
-* Description: implement test demo program for
-    SM2 encrypt data and decrypt ciphertext
-**************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "test_sm2_encrypt_and_decrypt.h"

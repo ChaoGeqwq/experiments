@@ -1,11 +1,3 @@
-/**************************************************
-* File name: sm2_create_key_pair.c
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Nov 18th, 2018
-* Description: implement SM2 key pair creation function
-**************************************************/
-
 #include <string.h>
 #include <openssl/obj_mac.h>
 #include <openssl/bn.h>

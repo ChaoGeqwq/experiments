@@ -1,12 +1,3 @@
-/**************************************************
-* File name: test_sm2_encrypt_and_decrypt.c
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Dec 9th, 2018
-* Description: implement SM2 encrypt data and decrypt
-    ciphertext test functions
-**************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

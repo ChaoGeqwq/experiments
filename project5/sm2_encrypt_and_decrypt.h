@@ -1,12 +1,3 @@
-/**************************************************
-* File name: sm2_encrypt_and_decrypt.h
-* Author: HAN Wei
-* Author's blog: https://blog.csdn.net/henter/
-* Date: Dec 8th, 2018
-* Description: declare SM2 encrypt data and decrypt
-    ciphertext functions
-**************************************************/
-
 #ifndef HEADER_SM2_ENCRYPT_AND_DECRYPT_COMPUTATION_H
   #define HEADER_SM2_ENCRYPT_AND_DECRYPT_COMPUTATION_H
 
