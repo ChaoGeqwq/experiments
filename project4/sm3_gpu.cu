@@ -8,14 +8,14 @@
 #include <device_launch_parameters.h>
 
 /**
- * SM3 ¹şÏ£Ëã·¨ GPU ¼ÓËÙÊµÏÖ
- * Ê¹ÓÃ CUDA ²¢ĞĞ¼ÆËã´ó·ùÌáÉıĞÔÄÜ
+ * SM3 å“ˆå¸Œç®—æ³• GPU åŠ é€Ÿå®ç°
+ * ä½¿ç”¨ CUDA å¹¶è¡Œè®¡ç®—å¤§å¹…æå‡æ€§èƒ½
  */
 
 #define THREADS_PER_BLOCK 256
 #define BLOCKS_PER_GRID 128
 
-// CUDA ´íÎó¼ì²éºê
+// CUDA é”™è¯¯æ£€æŸ¥å®
 #define CUDA_CHECK(call) \
     do { \
         cudaError_t error = call; \
@@ -26,7 +26,7 @@
         } \
     } while(0)
 
-// GPU Éè±¸º¯Êı
+// GPU è®¾å¤‡å‡½æ•°
 __device__ uint32_t d_rotl(uint32_t x, int n) {
     return (x << n) | (x >> (32 - n));
 }
@@ -47,13 +47,13 @@ __device__ uint32_t d_P1(uint32_t x) {
     return x ^ d_rotl(x, 15) ^ d_rotl(x, 23);
 }
 
-// GPU ºËĞÄº¯Êı£ºÑ¹Ëõº¯Êı
+// GPU æ ¸å¿ƒå‡½æ•°ï¼šå‹ç¼©å‡½æ•°
 __device__ void d_compress(uint32_t state[8], const uint32_t block[16]) {
     uint32_t W[68], W1[64];
     uint32_t A, B, C, D, E, F, G, H;
     uint32_t SS1, SS2, TT1, TT2;
 
-    // ÏûÏ¢À©Õ¹
+    // æ¶ˆæ¯æ‰©å±•
     for (int i = 0; i < 16; i++) {
         W[i] = block[i];
     }
@@ -69,7 +69,7 @@ __device__ void d_compress(uint32_t state[8], const uint32_t block[16]) {
     A = state[0]; B = state[1]; C = state[2]; D = state[3];
     E = state[4]; F = state[5]; G = state[6]; H = state[7];
 
-    // Ö÷Ñ­»·
+    // ä¸»å¾ªç¯
     for (int j = 0; j < 64; j++) {
         uint32_t T = (j < 16) ? 0x79cc4519 : 0x7a879d8a;
         SS1 = d_rotl((d_rotl(A, 12) + E + d_rotl(T, j)), 7);
@@ -90,7 +90,7 @@ __device__ void d_compress(uint32_t state[8], const uint32_t block[16]) {
     state[4] ^= E; state[5] ^= F; state[6] ^= G; state[7] ^= H;
 }
 
-// GPU ºËĞÄ£º²¢ĞĞ´¦Àí¶à¸ö¹şÏ£ÈÎÎñ
+// GPU æ ¸å¿ƒï¼šå¹¶è¡Œå¤„ç†å¤šä¸ªå“ˆå¸Œä»»åŠ¡
 __global__ void sm3_hash_kernel(
     const uint8_t* input_data,
     size_t* input_lengths,
@@ -101,16 +101,16 @@ __global__ void sm3_hash_kernel(
     
     if (tid >= num_tasks) return;
 
-    // ³õÊ¼»¯×´Ì¬
+    // åˆå§‹åŒ–çŠ¶æ€
     uint32_t state[8] = {
         0x7380166f, 0x4914b2b9, 0x172442d7, 0xda8a0600,
         0xa96f30bc, 0x163138aa, 0xe38dee4d, 0xb0fb0e4e
     };
 
     size_t data_len = input_lengths[tid];
-    const uint8_t* data = input_data + tid * 1024;  // ¼ÙÉèÃ¿¸öÈÎÎñ×î´ó1KB
+    const uint8_t* data = input_data + tid * 1024;  // å‡è®¾æ¯ä¸ªä»»åŠ¡æœ€å¤§1KB
 
-    // ¼ÆËãĞèÒªµÄ¿éÊı
+    // è®¡ç®—éœ€è¦çš„å—æ•°
     size_t bit_len = data_len * 8;
     size_t padded_len = data_len + 1;
     while ((padded_len % 64) != 56) {
@@ -118,11 +118,11 @@ __global__ void sm3_hash_kernel(
     }
     padded_len += 8;
 
-    // ´¦ÀíÃ¿¸ö 512 Î»¿é
+    // å¤„ç†æ¯ä¸ª 512 ä½å—
     for (size_t block_start = 0; block_start < padded_len; block_start += 64) {
         uint32_t block[16] = {0};
         
-        // ¸´ÖÆÊı¾İµ½¿éÖĞ
+        // å¤åˆ¶æ•°æ®åˆ°å—ä¸­
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 4; j++) {
                 size_t byte_idx = block_start + i * 4 + j;
@@ -133,7 +133,7 @@ __global__ void sm3_hash_kernel(
                 } else if (byte_idx == data_len) {
                     byte_val = 0x80;
                 } else if (byte_idx >= padded_len - 8) {
-                    // Ìí¼Ó³¤¶ÈĞÅÏ¢
+                    // æ·»åŠ é•¿åº¦ä¿¡æ¯
                     int len_byte_idx = byte_idx - (padded_len - 8);
                     byte_val = (bit_len >> ((7 - len_byte_idx) * 8)) & 0xff;
                 }
@@ -145,7 +145,7 @@ __global__ void sm3_hash_kernel(
         d_compress(state, block);
     }
 
-    // Êä³ö½á¹û
+    // è¾“å‡ºç»“æœ
     uint8_t* output = output_hashes + tid * 32;
     for (int i = 0; i < 8; i++) {
         output[i*4] = (state[i] >> 24) & 0xff;
@@ -155,7 +155,7 @@ __global__ void sm3_hash_kernel(
     }
 }
 
-// GPU ¼ÓËÙµÄÅúÁ¿¹şÏ£¼ÆËã
+// GPU åŠ é€Ÿçš„æ‰¹é‡å“ˆå¸Œè®¡ç®—
 __global__ void sm3_batch_kernel(
     const uint8_t* input_data,
     uint8_t* output_hashes,
@@ -174,7 +174,7 @@ __global__ void sm3_batch_kernel(
     const uint8_t* block_data = input_data + block_id * 64;
     uint32_t block[16];
     
-    // ×ª»»×Ö½ÚĞò
+    // è½¬æ¢å­—èŠ‚åº
     for (int i = 0; i < 16; i++) {
         block[i] = (block_data[i*4] << 24) |
                   (block_data[i*4 + 1] << 16) |
@@ -184,7 +184,7 @@ __global__ void sm3_batch_kernel(
     
     d_compress(state, block);
 
-    // Êä³ö½á¹û
+    // è¾“å‡ºç»“æœ
     uint8_t* output = output_hashes + block_id * 32;
     for (int i = 0; i < 8; i++) {
         output[i*4] = (state[i] >> 24) & 0xff;
@@ -214,11 +214,11 @@ public:
         CUDA_CHECK(cudaGetDeviceCount(&device_count));
         
         if (device_count == 0) {
-            std::cerr << "Ã»ÓĞÕÒµ½ CUDA Éè±¸" << std::endl;
+            std::cerr << "æ²¡æœ‰æ‰¾åˆ° CUDA è®¾å¤‡" << std::endl;
             return false;
         }
 
-        // Ñ¡Ôñ×î¼ÑÉè±¸
+        // é€‰æ‹©æœ€ä½³è®¾å¤‡
         int best_device = 0;
         size_t max_memory = 0;
         
@@ -226,8 +226,8 @@ public:
             cudaDeviceProp prop;
             CUDA_CHECK(cudaGetDeviceProperties(&prop, i));
             
-            std::cout << "Éè±¸ " << i << ": " << prop.name 
-                      << " (¼ÆËãÄÜÁ¦: " << prop.major << "." << prop.minor << ")" << std::endl;
+            std::cout << "è®¾å¤‡ " << i << ": " << prop.name 
+                      << " (è®¡ç®—èƒ½åŠ›: " << prop.major << "." << prop.minor << ")" << std::endl;
             
             if (prop.totalGlobalMem > max_memory) {
                 max_memory = prop.totalGlobalMem;
@@ -238,20 +238,20 @@ public:
         CUDA_CHECK(cudaSetDevice(best_device));
         gpu_initialized = true;
         
-        std::cout << "Ê¹ÓÃÉè±¸ " << best_device << std::endl;
+        std::cout << "ä½¿ç”¨è®¾å¤‡ " << best_device << std::endl;
         return true;
     }
 
-    // ÅúÁ¿¹şÏ£¼ÆËã
+    // æ‰¹é‡å“ˆå¸Œè®¡ç®—
     std::vector<std::vector<uint8_t>> batch_hash(const std::vector<std::vector<uint8_t>>& messages) {
         if (!gpu_initialized || messages.empty()) {
             return {};
         }
 
         int num_messages = messages.size();
-        size_t max_msg_size = 1024; // ÏŞÖÆÃ¿¸öÏûÏ¢×î´ó1KB
+        size_t max_msg_size = 1024; // é™åˆ¶æ¯ä¸ªæ¶ˆæ¯æœ€å¤§1KB
 
-        // ·ÖÅä GPU ÄÚ´æ
+        // åˆ†é… GPU å†…å­˜
         uint8_t* d_input;
         size_t* d_lengths;
         uint8_t* d_output;
@@ -260,7 +260,7 @@ public:
         CUDA_CHECK(cudaMalloc(&d_lengths, num_messages * sizeof(size_t)));
         CUDA_CHECK(cudaMalloc(&d_output, num_messages * 32));
 
-        // ×¼±¸ÊäÈëÊı¾İ
+        // å‡†å¤‡è¾“å…¥æ•°æ®
         std::vector<uint8_t> input_buffer(num_messages * max_msg_size, 0);
         std::vector<size_t> lengths(num_messages);
         
@@ -270,13 +270,13 @@ public:
                    messages[i].data(), lengths[i]);
         }
 
-        // ¸´ÖÆµ½ GPU
+        // å¤åˆ¶åˆ° GPU
         CUDA_CHECK(cudaMemcpy(d_input, input_buffer.data(), 
                              num_messages * max_msg_size, cudaMemcpyHostToDevice));
         CUDA_CHECK(cudaMemcpy(d_lengths, lengths.data(), 
                              num_messages * sizeof(size_t), cudaMemcpyHostToDevice));
 
-        // Æô¶¯ÄÚºË
+        // å¯åŠ¨å†…æ ¸
         int blocks = (num_messages + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
         sm3_hash_kernel<<<blocks, THREADS_PER_BLOCK>>>(
             d_input, d_lengths, d_output, num_messages
@@ -284,17 +284,17 @@ public:
         
         CUDA_CHECK(cudaDeviceSynchronize());
 
-        // ¸´ÖÆ½á¹û»Ø CPU
+        // å¤åˆ¶ç»“æœå› CPU
         std::vector<uint8_t> output_buffer(num_messages * 32);
         CUDA_CHECK(cudaMemcpy(output_buffer.data(), d_output, 
                              num_messages * 32, cudaMemcpyDeviceToHost));
 
-        // ÇåÀí GPU ÄÚ´æ
+        // æ¸…ç† GPU å†…å­˜
         CUDA_CHECK(cudaFree(d_input));
         CUDA_CHECK(cudaFree(d_lengths));
         CUDA_CHECK(cudaFree(d_output));
 
-        // ×ª»»Îª·µ»Ø¸ñÊ½
+        // è½¬æ¢ä¸ºè¿”å›æ ¼å¼
         std::vector<std::vector<uint8_t>> results(num_messages);
         for (int i = 0; i < num_messages; i++) {
             results[i].assign(output_buffer.begin() + i * 32, 
@@ -304,14 +304,14 @@ public:
         return results;
     }
 
-    // ´óÊı¾İÁ÷¹şÏ£´¦Àí
+    // å¤§æ•°æ®æµå“ˆå¸Œå¤„ç†
     std::vector<uint8_t> stream_hash(const std::vector<uint8_t>& large_data) {
         if (!gpu_initialized) {
             return {};
         }
 
-        // ¶ÔÓÚ´óÊı¾İ£¬·Ö¿é´¦Àí
-        size_t chunk_size = 64 * 1024; // 64KB ¿é
+        // å¯¹äºå¤§æ•°æ®ï¼Œåˆ†å—å¤„ç†
+        size_t chunk_size = 64 * 1024; // 64KB å—
         size_t num_chunks = (large_data.size() + chunk_size - 1) / chunk_size;
         
         uint32_t final_state[8] = {
@@ -324,11 +324,11 @@ public:
             size_t end = std::min(start + chunk_size, large_data.size());
             size_t current_size = end - start;
             
-            // ´¦Àíµ±Ç°¿é
+            // å¤„ç†å½“å‰å—
             std::vector<uint8_t> chunk_data(large_data.begin() + start, 
                                            large_data.begin() + end);
             
-            // Èç¹ûÊÇ×îºóÒ»¿é£¬½øĞĞÌî³ä
+            // å¦‚æœæ˜¯æœ€åä¸€å—ï¼Œè¿›è¡Œå¡«å……
             if (chunk == num_chunks - 1) {
                 uint64_t total_bits = large_data.size() * 8;
                 chunk_data.push_back(0x80);
@@ -342,7 +342,7 @@ public:
                 }
             }
             
-            // GPU ´¦Àí
+            // GPU å¤„ç†
             size_t padded_size = chunk_data.size();
             if (padded_size % 64 != 0) {
                 padded_size += 64 - (padded_size % 64);
@@ -367,14 +367,14 @@ public:
             
             CUDA_CHECK(cudaDeviceSynchronize());
             
-            // »ñÈ¡×îºóÒ»¸ö¿éµÄ½á¹û×÷ÎªÖĞ¼ä×´Ì¬
+            // è·å–æœ€åä¸€ä¸ªå—çš„ç»“æœä½œä¸ºä¸­é—´çŠ¶æ€
             if (num_blocks > 0) {
                 std::vector<uint8_t> last_result(32);
                 CUDA_CHECK(cudaMemcpy(last_result.data(), 
                                      d_output + (num_blocks - 1) * 32, 
                                      32, cudaMemcpyDeviceToHost));
                 
-                // ¸üĞÂ×´Ì¬
+                // æ›´æ–°çŠ¶æ€
                 for (int i = 0; i < 8; i++) {
                     final_state[i] = (last_result[i*4] << 24) |
                                     (last_result[i*4 + 1] << 16) |
@@ -387,7 +387,7 @@ public:
             CUDA_CHECK(cudaFree(d_output));
         }
 
-        // ×ª»»×îÖÕ½á¹û
+        // è½¬æ¢æœ€ç»ˆç»“æœ
         std::vector<uint8_t> result(32);
         for (int i = 0; i < 8; i++) {
             result[i*4] = (final_state[i] >> 24) & 0xff;
@@ -408,22 +408,22 @@ public:
     }
 };
 
-// GPU ĞÔÄÜ²âÊÔ
+// GPU æ€§èƒ½æµ‹è¯•
 class GPU_Benchmark {
 public:
     static void benchmark_gpu_performance() {
-        std::cout << "=== SM3 GPU ¼ÓËÙĞÔÄÜ²âÊÔ ===" << std::endl;
+        std::cout << "=== SM3 GPU åŠ é€Ÿæ€§èƒ½æµ‹è¯• ===" << std::endl;
         
         SM3_GPU gpu_hasher;
         
-        // ²âÊÔÅúÁ¿¹şÏ£
-        std::cout << "\nÅúÁ¿¹şÏ£²âÊÔ:" << std::endl;
+        // æµ‹è¯•æ‰¹é‡å“ˆå¸Œ
+        std::cout << "\næ‰¹é‡å“ˆå¸Œæµ‹è¯•:" << std::endl;
         std::vector<int> batch_sizes = {100, 1000, 10000, 100000};
         
         for (int batch_size : batch_sizes) {
             std::vector<std::vector<uint8_t>> messages(batch_size);
             
-            // Éú³É²âÊÔÊı¾İ
+            // ç”Ÿæˆæµ‹è¯•æ•°æ®
             for (int i = 0; i < batch_size; i++) {
                 std::string test_str = "Message " + std::to_string(i) + " for testing";
                 messages[i] = std::vector<uint8_t>(test_str.begin(), test_str.end());
@@ -436,14 +436,14 @@ public:
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             double throughput = (batch_size * 1000000.0) / duration.count();
             
-            std::cout << "ÅúÁ¿´óĞ¡: " << batch_size << ", "
-                      << "Ê±¼ä: " << duration.count() << " ¦Ìs, "
-                      << "ÍÌÍÂÁ¿: " << std::fixed << std::setprecision(2) 
+            std::cout << "æ‰¹é‡å¤§å°: " << batch_size << ", "
+                      << "æ—¶é—´: " << duration.count() << " Î¼s, "
+                      << "ååé‡: " << std::fixed << std::setprecision(2) 
                       << throughput << " hashes/s" << std::endl;
         }
         
-        // ²âÊÔ´óÊı¾İÁ÷´¦Àí
-        std::cout << "\n´óÊı¾İÁ÷²âÊÔ:" << std::endl;
+        // æµ‹è¯•å¤§æ•°æ®æµå¤„ç†
+        std::cout << "\nå¤§æ•°æ®æµæµ‹è¯•:" << std::endl;
         std::vector<size_t> data_sizes = {1024*1024, 10*1024*1024, 100*1024*1024}; // 1MB, 10MB, 100MB
         
         for (size_t size : data_sizes) {
@@ -459,35 +459,35 @@ public:
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             double throughput = (size * 1000000.0) / duration.count() / 1024 / 1024; // MB/s
             
-            std::cout << "Êı¾İ´óĞ¡: " << size / (1024*1024) << " MB, "
-                      << "Ê±¼ä: " << duration.count() << " ¦Ìs, "
-                      << "ÍÌÍÂÁ¿: " << std::fixed << std::setprecision(2) 
+            std::cout << "æ•°æ®å¤§å°: " << size / (1024*1024) << " MB, "
+                      << "æ—¶é—´: " << duration.count() << " Î¼s, "
+                      << "ååé‡: " << std::fixed << std::setprecision(2) 
                       << throughput << " MB/s" << std::endl;
                       
-            // ÏÔÊ¾½á¹ûÊ¾Àı
+            // æ˜¾ç¤ºç»“æœç¤ºä¾‹
             if (size == 1024*1024) {
-                std::cout << "1MBÊı¾İ¹şÏ£Öµ: " << SM3_GPU::bytes_to_hex(result) << std::endl;
+                std::cout << "1MBæ•°æ®å“ˆå¸Œå€¼: " << SM3_GPU::bytes_to_hex(result) << std::endl;
             }
         }
     }
 };
 
 int main() {
-    std::cout << "SM3 ¹şÏ£Ëã·¨ GPU ¼ÓËÙÊµÏÖ" << std::endl;
-    std::cout << "ÓÅ»¯²ßÂÔ:" << std::endl;
-    std::cout << "1. CUDA ²¢ĞĞ¼ÆËã" << std::endl;
-    std::cout << "2. ÅúÁ¿Êı¾İ´¦Àí" << std::endl;
-    std::cout << "3. GPU ÄÚ´æÓÅ»¯" << std::endl;
-    std::cout << "4. Á÷Ê½Êı¾İ´¦Àí" << std::endl;
-    std::cout << "5. Éè±¸×Ô¶¯Ñ¡Ôñ" << std::endl;
+    std::cout << "SM3 å“ˆå¸Œç®—æ³• GPU åŠ é€Ÿå®ç°" << std::endl;
+    std::cout << "ä¼˜åŒ–ç­–ç•¥:" << std::endl;
+    std::cout << "1. CUDA å¹¶è¡Œè®¡ç®—" << std::endl;
+    std::cout << "2. æ‰¹é‡æ•°æ®å¤„ç†" << std::endl;
+    std::cout << "3. GPU å†…å­˜ä¼˜åŒ–" << std::endl;
+    std::cout << "4. æµå¼æ•°æ®å¤„ç†" << std::endl;
+    std::cout << "5. è®¾å¤‡è‡ªåŠ¨é€‰æ‹©" << std::endl;
     std::cout << std::endl;
 
     try {
-        // GPU ĞÔÄÜ²âÊÔ
+        // GPU æ€§èƒ½æµ‹è¯•
         GPU_Benchmark::benchmark_gpu_performance();
         
-        // ¼òµ¥ÕıÈ·ĞÔ²âÊÔ
-        std::cout << "\n=== ÕıÈ·ĞÔ²âÊÔ ===" << std::endl;
+        // ç®€å•æ­£ç¡®æ€§æµ‹è¯•
+        std::cout << "\n=== æ­£ç¡®æ€§æµ‹è¯• ===" << std::endl;
         SM3_GPU gpu_hasher;
         
         std::string test_str = "Hello, SM3 GPU!";
@@ -497,12 +497,12 @@ int main() {
         
         auto results = gpu_hasher.batch_hash(test_messages);
         if (!results.empty()) {
-            std::cout << "²âÊÔ×Ö·û´®: \"" << test_str << "\"" << std::endl;
-            std::cout << "GPU SM3 ¹şÏ£Öµ: " << SM3_GPU::bytes_to_hex(results[0]) << std::endl;
+            std::cout << "æµ‹è¯•å­—ç¬¦ä¸²: \"" << test_str << "\"" << std::endl;
+            std::cout << "GPU SM3 å“ˆå¸Œå€¼: " << SM3_GPU::bytes_to_hex(results[0]) << std::endl;
         }
         
     } catch (const std::exception& e) {
-        std::cerr << "´íÎó: " << e.what() << std::endl;
+        std::cerr << "é”™è¯¯: " << e.what() << std::endl;
         return 1;
     }
     
