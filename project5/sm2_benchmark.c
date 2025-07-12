@@ -105,12 +105,6 @@ int main() {
         printf("\n");
     }
     
-    // 推荐使用场景
-    printf("\n=== 使用场景推荐 ===\n");
-    printf("• 基础实现:     适合学习和简单应用，兼容性最好\n");
-    printf("• 预计算优化:   适合固定密钥的大量加密操作\n");
-    printf("• 蒙哥马利阶梯: 适合对侧信道攻击敏感的场景\n");
-    printf("• 滑动窗口:     适合大量不同密钥的操作\n");
     
     printf("\n=== 测试环境信息 ===\n");
     printf("OpenSSL 版本: %s\n", OpenSSL_version(OPENSSL_VERSION));
