@@ -209,12 +209,6 @@ int main() {
     cpu_utilization_test();
     concurrency_simulation();
     
-    printf("\n=== 性能优化建议 ===\n");
-    printf("1. 小规模应用: 使用基础实现或蒙哥马利阶梯\n");
-    printf("2. 大规模应用: 考虑预计算优化或滑动窗口\n");
-    printf("3. 安全敏感场景: 推荐蒙哥马利阶梯实现\n");
-    printf("4. 内存受限环境: 使用基础实现\n");
-    printf("5. 高并发场景: 考虑硬件加速或专用芯片\n");
     
     printf("\n详细性能分析完成!\n");
     return 0;
