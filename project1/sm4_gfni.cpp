@@ -36,8 +36,8 @@ void sm4_gfni_encrypt(const uint32_t plaintext[4], uint32_t ciphertext[4], const
         uint32_t sbox_result = _mm_cvtsi128_si32(tmp_vec);
         
         // L变换
-        uint32_t l_result = sbox_result ^ rotl(sbox_result, 2) ^ rotl(sbox_result, 10) ^ 
-                           rotl(sbox_result, 18) ^ rotl(sbox_result, 24);
+        uint32_t l_result = sbox_result ^ rotl32(sbox_result, 2) ^ rotl32(sbox_result, 10) ^ 
+                           rotl32(sbox_result, 18) ^ rotl32(sbox_result, 24);
         
         // 更新状态
         uint32_t new_x = x[0] ^ l_result;
@@ -74,8 +74,8 @@ void sm4_gfni_decrypt(const uint32_t ciphertext[4], uint32_t plaintext[4], const
         uint32_t sbox_result = _mm_cvtsi128_si32(tmp_vec);
         
         // L变换
-        uint32_t l_result = sbox_result ^ rotl(sbox_result, 2) ^ rotl(sbox_result, 10) ^ 
-                           rotl(sbox_result, 18) ^ rotl(sbox_result, 24);
+        uint32_t l_result = sbox_result ^ rotl32(sbox_result, 2) ^ rotl32(sbox_result, 10) ^ 
+                           rotl32(sbox_result, 18) ^ rotl32(sbox_result, 24);
         
         // 更新状态
         uint32_t new_x = x[0] ^ l_result;

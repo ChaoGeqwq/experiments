@@ -44,7 +44,7 @@ const uint8_t SM4_SBOX[256] = {
     0x18, 0xf0, 0x7d, 0xec, 0x3a, 0xdc, 0x4d, 0x20, 0x79, 0xee, 0x5f, 0x3e, 0xd7, 0xcb, 0x39, 0x48
 };
 
-static inline uint32_t rotl(uint32_t x, int n) {
+static inline uint32_t rotl32(uint32_t x, int n) {
     return (x << n) | (x >> (32 - n));
 }
 
@@ -53,21 +53,21 @@ void sm4_ttable_init(void) {
     for (int i = 0; i < 256; i++) {
         uint32_t sbox_val = SM4_SBOX[i];
         
-        // L变换T-table: T(x) = τ(x) ⊕ rotl(τ(x), 2) ⊕ rotl(τ(x), 10) ⊕ rotl(τ(x), 18) ⊕ rotl(τ(x), 24)
-        uint32_t l_result = sbox_val ^ rotl(sbox_val, 2) ^ rotl(sbox_val, 10) ^ rotl(sbox_val, 18) ^ rotl(sbox_val, 24);
+        // L变换T-table: T(x) = τ(x) ⊕ rotl32(τ(x), 2) ⊕ rotl32(τ(x), 10) ⊕ rotl32(τ(x), 18) ⊕ rotl32(τ(x), 24)
+        uint32_t l_result = sbox_val ^ rotl32(sbox_val, 2) ^ rotl32(sbox_val, 10) ^ rotl32(sbox_val, 18) ^ rotl32(sbox_val, 24);
         
         SM4_T0[i] = l_result;
-        SM4_T1[i] = rotl(l_result, 8);
-        SM4_T2[i] = rotl(l_result, 16);
-        SM4_T3[i] = rotl(l_result, 24);
+        SM4_T1[i] = rotl32(l_result, 8);
+        SM4_T2[i] = rotl32(l_result, 16);
+        SM4_T3[i] = rotl32(l_result, 24);
         
-        // L'变换T-table: T'(x) = τ(x) ⊕ rotl(τ(x), 13) ⊕ rotl(τ(x), 23)
-        uint32_t lp_result = sbox_val ^ rotl(sbox_val, 13) ^ rotl(sbox_val, 23);
+        // L'变换T-table: T'(x) = τ(x) ⊕ rotl32(τ(x), 13) ⊕ rotl32(τ(x), 23)
+        uint32_t lp_result = sbox_val ^ rotl32(sbox_val, 13) ^ rotl32(sbox_val, 23);
         
         SM4_TK0[i] = lp_result;
-        SM4_TK1[i] = rotl(lp_result, 8);
-        SM4_TK2[i] = rotl(lp_result, 16);
-        SM4_TK3[i] = rotl(lp_result, 24);
+        SM4_TK1[i] = rotl32(lp_result, 8);
+        SM4_TK2[i] = rotl32(lp_result, 16);
+        SM4_TK3[i] = rotl32(lp_result, 24);
     }
 }
 
