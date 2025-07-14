@@ -16,7 +16,7 @@ def print_banner():
 
 def demo_basic_protocol():
     """演示基本协议流程"""
-    print("\n🔍 演示1: 基本PSI协议流程")
+    print("\n演示1: 基本PSI协议流程")
     print("-" * 40)
     
     # 创建测试数据
@@ -290,12 +290,6 @@ def main():
         print(f"✅ 性能测试: {perf_time:.4f} 秒 (1000+100规模)")
         print(f"✅ 高级功能: 已展示")
         
-        print("\n🔒 协议特点:")
-        print("   • 保护用户密码隐私")
-        print("   • 高效的大规模处理能力")
-        print("   • 支持动态数据库更新")
-        print("   • 完整的会话管理")
-        print("   • 详细的安全报告")
         
     except Exception as e:
         print(f"\n❌ 演示过程中出现错误: {e}")
