@@ -1,14 +1,15 @@
 #include "sm4_optimized.h"
 #include <immintrin.h>
 
+static inline uint32_t rotl32(uint32_t x, int n) {
+    return (x << n) | (x >> (32 - n));
+}
+
 #ifdef __AES__
 
-// Ê¹ÓÃAESNIÖ¸ÁîÊµÏÖSM4 SºĞ²éÕÒ
+// ä½¿ç”¨AESæŒ‡ä»¤ä¼˜åŒ–çš„Sç›’æŸ¥æ‰¾
 static inline __m128i sm4_sbox_simd(__m128i input) {
-    // Ê¹ÓÃAESµÄSubBytes±ä»»×÷Îª»ù´¡£¬Í¨¹ı²éÕÒ±íĞŞÕı
-    // ÕâÀï¼ò»¯ÊµÏÖ£¬Êµ¼ÊĞèÒªÍ¨¹ı¸´ÔÓµÄ·ÂÉä±ä»»À´ÊµÏÖSM4 SºĞ
-    
-    // ²ğ·ÖÎª4¸ö×Ö½Ú·Ö±ğ´¦Àí
+    // ç®€åŒ–å®ç°ï¼šé€šè¿‡æŸ¥æ‰¾è¡¨è¿›è¡ŒSç›’å˜æ¢
     uint8_t bytes[16];
     _mm_storeu_si128((__m128i*)bytes, input);
     
@@ -19,30 +20,27 @@ static inline __m128i sm4_sbox_simd(__m128i input) {
     return _mm_loadu_si128((__m128i*)bytes);
 }
 
-// AESNIÓÅ»¯µÄµ¥¿é¼ÓÃÜ
+// AESNIä¼˜åŒ–çš„å•å—åŠ å¯†
 void sm4_aesni_encrypt(const uint32_t plaintext[4], uint32_t ciphertext[4], const uint32_t round_keys[32]) {
-    __m128i state = _mm_loadu_si128((__m128i*)plaintext);
-    
-    // ×Ö½ÚĞò×ª»»£¨´ó¶ËĞò£©
-    state = _mm_shuffle_epi8(state, _mm_setr_epi8(3,2,1,0,7,6,5,4,11,10,9,8,15,14,13,12));
-    
     uint32_t x[4];
-    _mm_storeu_si128((__m128i*)x, state);
+    memcpy(x, plaintext, 16);
     
-    // 32ÂÖSM4¼ÓÃÜ
+    // 32è½®SM4åŠ å¯†
     for (int i = 0; i < 32; i++) {
         uint32_t tmp = x[1] ^ x[2] ^ x[3] ^ round_keys[i];
         
-        // Ê¹ÓÃSIMDÓÅ»¯µÄSºĞ±ä»»
-        __m128i tmp_vec = _mm_set1_epi32(tmp);
-        tmp_vec = sm4_sbox_simd(tmp_vec);
-        uint32_t sbox_result = _mm_cvtsi128_si32(tmp_vec);
+        // Sç›’å˜æ¢
+        uint8_t* tmp_bytes = (uint8_t*)&tmp;
+        uint32_t sbox_result = (SM4_SBOX[tmp_bytes[3]] << 24) |
+                               (SM4_SBOX[tmp_bytes[2]] << 16) |
+                               (SM4_SBOX[tmp_bytes[1]] << 8) |
+                               SM4_SBOX[tmp_bytes[0]];
         
-        // L±ä»»
+        // Lå˜æ¢
         uint32_t l_result = sbox_result ^ rotl32(sbox_result, 2) ^ rotl32(sbox_result, 10) ^ 
                            rotl32(sbox_result, 18) ^ rotl32(sbox_result, 24);
         
-        // ¸üĞÂ×´Ì¬
+        // æ›´æ–°çŠ¶æ€
         uint32_t new_x = x[0] ^ l_result;
         x[0] = x[1];
         x[1] = x[2];
@@ -50,39 +48,34 @@ void sm4_aesni_encrypt(const uint32_t plaintext[4], uint32_t ciphertext[4], cons
         x[3] = new_x;
     }
     
-    // ·´Ğò±ä»»
-    state = _mm_setr_epi32(x[3], x[2], x[1], x[0]);
-    
-    // ×Ö½ÚĞò×ª»»»ØÀ´
-    state = _mm_shuffle_epi8(state, _mm_setr_epi8(3,2,1,0,7,6,5,4,11,10,9,8,15,14,13,12));
-    
-    _mm_storeu_si128((__m128i*)ciphertext, state);
+    // ååºå˜æ¢
+    ciphertext[0] = x[3];
+    ciphertext[1] = x[2];
+    ciphertext[2] = x[1];
+    ciphertext[3] = x[0];
 }
 
-// AESNIÓÅ»¯µÄµ¥¿é½âÃÜ
+// AESNIä¼˜åŒ–çš„å•å—è§£å¯†
 void sm4_aesni_decrypt(const uint32_t ciphertext[4], uint32_t plaintext[4], const uint32_t round_keys[32]) {
-    __m128i state = _mm_loadu_si128((__m128i*)ciphertext);
-    
-    // ×Ö½ÚĞò×ª»»
-    state = _mm_shuffle_epi8(state, _mm_setr_epi8(3,2,1,0,7,6,5,4,11,10,9,8,15,14,13,12));
-    
     uint32_t x[4];
-    _mm_storeu_si128((__m128i*)x, state);
+    memcpy(x, ciphertext, 16);
     
-    // 32ÂÖSM4½âÃÜ£¨ÄæĞòÃÜÔ¿£©
+    // 32è½®SM4è§£å¯†ï¼ˆé€†åºå¯†é’¥ï¼‰
     for (int i = 0; i < 32; i++) {
         uint32_t tmp = x[1] ^ x[2] ^ x[3] ^ round_keys[31-i];
         
-        // Ê¹ÓÃSIMDÓÅ»¯µÄSºĞ±ä»»
-        __m128i tmp_vec = _mm_set1_epi32(tmp);
-        tmp_vec = sm4_sbox_simd(tmp_vec);
-        uint32_t sbox_result = _mm_cvtsi128_si32(tmp_vec);
+        // Sç›’å˜æ¢
+        uint8_t* tmp_bytes = (uint8_t*)&tmp;
+        uint32_t sbox_result = (SM4_SBOX[tmp_bytes[3]] << 24) |
+                               (SM4_SBOX[tmp_bytes[2]] << 16) |
+                               (SM4_SBOX[tmp_bytes[1]] << 8) |
+                               SM4_SBOX[tmp_bytes[0]];
         
-        // L±ä»»
+        // Lå˜æ¢
         uint32_t l_result = sbox_result ^ rotl32(sbox_result, 2) ^ rotl32(sbox_result, 10) ^ 
                            rotl32(sbox_result, 18) ^ rotl32(sbox_result, 24);
         
-        // ¸üĞÂ×´Ì¬
+        // æ›´æ–°çŠ¶æ€
         uint32_t new_x = x[0] ^ l_result;
         x[0] = x[1];
         x[1] = x[2];
@@ -90,16 +83,14 @@ void sm4_aesni_decrypt(const uint32_t ciphertext[4], uint32_t plaintext[4], cons
         x[3] = new_x;
     }
     
-    // ·´Ğò±ä»»
-    state = _mm_setr_epi32(x[3], x[2], x[1], x[0]);
-    
-    // ×Ö½ÚĞò×ª»»»ØÀ´
-    state = _mm_shuffle_epi8(state, _mm_setr_epi8(3,2,1,0,7,6,5,4,11,10,9,8,15,14,13,12));
-    
-    _mm_storeu_si128((__m128i*)plaintext, state);
+    // ååºå˜æ¢
+    plaintext[0] = x[3];
+    plaintext[1] = x[2];
+    plaintext[2] = x[1];
+    plaintext[3] = x[0];
 }
 
-// AESNIÓÅ»¯µÄ¶à¿é¼ÓÃÜ
+// AESNIä¼˜åŒ–çš„å¤šå—åŠ å¯†
 void sm4_aesni_encrypt_blocks(const uint8_t* plaintext, uint8_t* ciphertext, 
                               const uint32_t round_keys[32], size_t num_blocks) {
     for (size_t i = 0; i < num_blocks; i++) {
@@ -111,7 +102,7 @@ void sm4_aesni_encrypt_blocks(const uint8_t* plaintext, uint8_t* ciphertext,
 
 #else
 
-// Èç¹û²»Ö§³ÖAESNI£¬ÔòÊ¹ÓÃT-tableÊµÏÖ
+// å¦‚æœä¸æ”¯æŒAESNIï¼Œåˆ™ä½¿ç”¨T-tableå®ç°
 void sm4_aesni_encrypt(const uint32_t plaintext[4], uint32_t ciphertext[4], const uint32_t round_keys[32]) {
     sm4_ttable_encrypt(plaintext, ciphertext, round_keys);
 }
