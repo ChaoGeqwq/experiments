@@ -32,9 +32,9 @@ def demo_basic_protocol():
         "unique_password_2024"  # 安全
     }
     
-    print(f"📊 泄露密码数据库: {len(leaked_passwords)} 个密码")
-    print(f"👤 用户密码: {len(user_passwords)} 个密码")
-    print(f"   用户密码列表: {list(user_passwords)}")
+    print(f"泄露密码数据库: {len(leaked_passwords)} 个密码")
+    print(f"用户密码: {len(user_passwords)} 个密码")
+    print(f"用户密码列表: {list(user_passwords)}")
     
     # 运行PSI协议
     server_psi = PSIProtocol("server", leaked_passwords)
@@ -49,15 +49,15 @@ def demo_basic_protocol():
     
     end_time = time.time()
     
-    print(f"⏱️  协议执行时间: {end_time - start_time:.4f} 秒")
-    print(f"🔍 检查结果: 发现 {len(compromised)} 个泄露密码")
+    print(f"协议执行时间: {end_time - start_time:.4f} 秒")
+    print(f"检查结果: 发现 {len(compromised)} 个泄露密码")
     
     return len(compromised) > 0
 
 
 def demo_client_server_interaction():
     """演示完整的客户端-服务器交互"""
-    print("\n🌐 演示2: 客户端-服务器交互")
+    print("\n演示2: 客户端-服务器交互")
     print("-" * 40)
     
     # 创建服务器
@@ -84,7 +84,7 @@ def demo_client_server_interaction():
     def check_passwords(client):
         return client.check_passwords_with_server(server)
     
-    print("🔄 开始并发密码检查...")
+    print("开始并发密码检查...")
     threads = []
     results = [None] * len(clients)
     
@@ -107,28 +107,28 @@ def demo_client_server_interaction():
     
     end_time = time.time()
     
-    print(f"⏱️  总执行时间: {end_time - start_time:.4f} 秒")
+    print(f"总执行时间: {end_time - start_time:.4f} 秒")
     
     # 显示结果
-    print("\n📊 检查结果摘要:")
+    print("\n检查结果摘要:")
     total_compromised = 0
     for i, client in enumerate(clients):
         summary = client.get_check_summary()
         print(f"   {client.user_id}: {summary['total_compromised']} 个泄露密码")
         total_compromised += summary['total_compromised']
     
-    print(f"🔍 总计发现: {total_compromised} 个泄露密码")
+    print(f"总计发现: {total_compromised} 个泄露密码")
     
     # 显示服务器统计
     server_stats = server.get_server_stats()
-    print(f"🖥️  服务器统计: {server_stats}")
+    print(f"服务器统计: {server_stats}")
     
     return total_compromised
 
 
 def demo_security_features():
     """演示安全特性"""
-    print("\n🛡️ 演示3: 安全特性展示")
+    print("\n演示3: 安全特性展示")
     print("-" * 40)
     
     # 创建服务器和客户端
@@ -163,11 +163,11 @@ def demo_security_features():
 
 def demo_performance_test():
     """演示性能测试"""
-    print("\n⚡ 演示4: 性能测试")
+    print("\n演示4: 性能测试")
     print("-" * 40)
     
     # 创建大规模数据集
-    print("📈 生成大规模测试数据...")
+    print("生成大规模测试数据...")
     
     # 生成大量泄露密码
     leaked_passwords = set()
@@ -182,7 +182,7 @@ def demo_performance_test():
         else:
             user_passwords.add(f"safe_password_{i}")
     
-    print(f"📊 数据规模:")
+    print(f"数据规模:")
     print(f"   - 泄露密码数据库: {len(leaked_passwords)} 个")
     print(f"   - 用户密码: {len(user_passwords)} 个")
     print(f"   - 预期泄露数量: 10 个")
@@ -191,7 +191,7 @@ def demo_performance_test():
     server_psi = PSIProtocol("server", leaked_passwords)
     client_psi = PSIProtocol("client", user_passwords)
     
-    print("🔄 执行性能测试...")
+    print("执行性能测试...")
     start_time = time.time()
     
     # 执行协议
@@ -205,7 +205,7 @@ def demo_performance_test():
     end_time = time.time()
     
     # 显示性能结果
-    print(f"📈 性能结果:")
+    print(f"性能结果:")
     print(f"   - 客户端盲化时间: {msg_time - start_time:.4f} 秒")
     print(f"   - 服务器处理时间: {server_time - msg_time:.4f} 秒")
     print(f"   - 客户端分析时间: {end_time - server_time:.4f} 秒")
@@ -217,7 +217,7 @@ def demo_performance_test():
 
 def demo_advanced_features():
     """演示高级功能"""
-    print("\n🚀 演示5: 高级功能")
+    print("\n演示5: 高级功能")
     print("-" * 40)
     
     # 服务器管理器演示
@@ -227,10 +227,10 @@ def demo_advanced_features():
     server1 = manager.create_server("primary_server")
     server2 = manager.create_server("backup_server")
     
-    print(f"🖥️  创建了 {len(manager.list_servers())} 个服务器实例")
+    print(f"创建了 {len(manager.list_servers())} 个服务器实例")
     
     # 动态密码数据库更新
-    print("🔄 模拟动态数据库更新...")
+    print("模拟动态数据库更新...")
     original_count = len(server1.leaked_passwords)
     
     # 添加新的泄露密码
@@ -247,7 +247,7 @@ def demo_advanced_features():
     client.add_password("safe_password_123")
     
     # 多次检查以建立历史记录
-    print("📊 建立检查历史记录...")
+    print("建立检查历史记录...")
     for i in range(3):
         print(f"   执行第 {i+1} 次检查...")
         client.check_passwords_with_server(server1)
@@ -255,7 +255,7 @@ def demo_advanced_features():
     
     # 显示历史记录
     summary = client.get_check_summary()
-    print(f"📈 用户检查历史:")
+    print(f"用户检查历史:")
     for key, value in summary.items():
         print(f"   {key}: {value}")
 

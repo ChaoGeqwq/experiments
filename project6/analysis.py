@@ -17,7 +17,7 @@ class ProtocolAnalyzer:
     def benchmark_protocol(self, server_set_sizes: List[int], 
                           client_set_sizes: List[int]) -> Dict:
         """基准测试协议性能"""
-        print("🔬 开始协议性能基准测试...")
+        print("开始协议性能基准测试...")
         
         results = {
             'server_sizes': server_set_sizes,
@@ -70,7 +70,7 @@ class ProtocolAnalyzer:
     
     def test_privacy_guarantees(self) -> Dict:
         """测试隐私保证"""
-        print("🔐 测试隐私保证...")
+        print("测试隐私保证...")
         
         # 创建测试数据
         server_passwords = {"password123", "admin", "secret", "123456"}
@@ -97,12 +97,12 @@ class ProtocolAnalyzer:
                 privacy_test['client_passwords_in_message'] = True
                 break
         
-        print(f"   隐私测试结果: {privacy_test}")
+        print(f"隐私测试结果: {privacy_test}")
         return privacy_test
     
     def analyze_scalability(self) -> Dict:
         """分析可扩展性"""
-        print("📈 分析协议可扩展性...")
+        print("分析协议可扩展性...")
         
         sizes = [10, 50, 100, 500, 1000]
         times = []
@@ -148,7 +148,7 @@ class ProtocolAnalyzer:
     
     def test_correctness(self, num_tests: int = 10) -> Dict:
         """测试协议正确性"""
-        print(f"✅ 测试协议正确性 ({num_tests} 次测试)...")
+        print(f"测试协议正确性 ({num_tests} 次测试)...")
         
         correct_results = 0
         
@@ -205,7 +205,7 @@ class SecurityAuditor:
     @staticmethod
     def audit_implementation() -> Dict:
         """审计实现安全性"""
-        print("🛡️ 进行安全审计...")
+        print("进行安全审计...")
         
         audit_results = {
             'cryptographic_functions': True,
@@ -261,7 +261,7 @@ class SecurityAuditor:
 
 def main():
     """主分析函数"""
-    print("🔬 Password Checkup 协议分析工具")
+    print("Password Checkup 协议分析工具")
     print("=" * 50)
     
     analyzer = ProtocolAnalyzer()
@@ -287,14 +287,14 @@ def main():
     
     # 生成综合报告
     print("\n" + "=" * 50)
-    print("📊 综合分析报告")
+    print("综合分析报告")
     print("=" * 50)
     
-    print(f"🚀 性能: 平均执行时间 {statistics.mean(benchmark_results['execution_times']):.4f}s")
-    print(f"🔐 隐私: {'通过' if not privacy_results['client_passwords_in_message'] else '失败'}")
-    print(f"📈 可扩展性: {scalability_results['complexity_estimate']}")
-    print(f"✅ 正确性: {correctness_results['accuracy_rate']:.1%}")
-    print(f"🛡️ 安全性: {security_results['overall_score']:.1%}")
+    print(f"性能: 平均执行时间 {statistics.mean(benchmark_results['execution_times']):.4f}s")
+    print(f"隐私: {'通过' if not privacy_results['client_passwords_in_message'] else '失败'}")
+    print(f"可扩展性: {scalability_results['complexity_estimate']}")
+    print(f"正确性: {correctness_results['accuracy_rate']:.1%}")
+    print(f"安全性: {security_results['overall_score']:.1%}")
     
     # 安全报告
     print(auditor.generate_security_report())
