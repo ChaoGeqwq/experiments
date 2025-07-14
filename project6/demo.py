@@ -1,8 +1,3 @@
-"""
-Google Password Checkup 协议完整演示 - 增强版
-展示客户端和服务器之间的完整交互流程，使用扩大的数据集
-"""
-
 import time
 import threading
 from typing import List
