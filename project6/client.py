@@ -151,16 +151,9 @@ class PasswordCheckupClient:
                 print(f"泄露密码: {compromised_count}/{total_checked}")
                 
                 if compromised_count > 0:
-                    print("⚠️  发现泄露密码，建议立即更换以下密码:")
+                    print("发现泄露密码，建议立即更换以下密码:")
                     for pwd in latest_check['compromised_passwords']:
                         print(f"   - {pwd}")
-                    
-                    print("\n🔒 密码安全建议:")
-                    print("   1. 立即更换所有泄露的密码")
-                    print("   2. 使用强密码（至少12位，包含大小写、数字、特殊字符）")
-                    print("   3. 为每个账户使用不同的密码")
-                    print("   4. 考虑使用密码管理器")
-                    print("   5. 启用双因素认证")
                 else:
                     print("✅ 所有密码都是安全的！")
             else:

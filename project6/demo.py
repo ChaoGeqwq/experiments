@@ -17,7 +17,7 @@ def print_banner():
 def get_large_leaked_password_database():
     """获取大规模泄露密码数据库"""
     leaked_passwords = {
-        # 最常见的弱密码 (Top 100)
+        # 最常见的弱密码
         "123456", "password", "123456789", "12345678", "12345",
         "111111", "1234567", "sunshine", "qwerty", "iloveyou",
         "princess", "admin", "welcome", "666666", "abc123",
