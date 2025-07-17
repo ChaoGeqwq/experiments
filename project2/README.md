@@ -159,23 +159,31 @@ project2/
 
 系统生成的可视化文件展示了：
 
-1. **水印过程可视化** (`watermark_process_visualization.png`)
-   - 原始图像与水印图像对比
-   - 差异图像增强显示
-   - 提取水印结果
-   - 灰度直方图分析
-   - 质量指标展示
+#### 1. 水印过程可视化
+展示了水印嵌入和提取的完整过程，包括原始图像与水印图像对比、差异图像增强显示、提取水印结果、灰度直方图分析和质量指标展示。
 
-2. **攻击效果可视化** (`attack_effects_visualization.png`)
-   - 各种攻击对图像的影响
-   - 攻击前后的视觉对比
-   - 4×3网格布局展示
+![水印过程可视化](watermark_process_visualization.png)
 
-3. **鲁棒性结果可视化** (`robustness_results_visualization.png`)
-   - PSNR值柱状图
-   - SSIM值柱状图
-   - 成功率饼图
-   - PSNR vs SSIM散点图
+#### 2. 攻击效果可视化
+展示了各种攻击对图像的影响，包括攻击前后的视觉对比，采用4×3网格布局展示所有攻击类型的效果。
+
+![攻击效果可视化](attack_effects_visualization.png)
+
+#### 3. 鲁棒性结果可视化
+综合展示了鲁棒性测试的统计结果，包括PSNR值柱状图、SSIM值柱状图、成功率饼图和PSNR vs SSIM散点图。
+
+![鲁棒性结果可视化](robustness_results_visualization.png)
+
+#### 4. 水印图像对比
+
+原始图像：
+![原始图像](picture.png)
+
+水印图像：
+![水印图像](watermarked_picture.png)
+
+提取的水印：
+![提取的水印](extracted_watermark.png)
 
 ## 安装和使用
 
