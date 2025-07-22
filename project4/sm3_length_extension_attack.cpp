@@ -378,7 +378,7 @@ public:
         cout << "   攻击结果: " << (attackSuccess ? "✓ 成功" : "✗ 失败") << endl;
         
         if (attackSuccess) {
-            cout << "\n   ⚠️  Length Extension Attack 验证成功!" << endl;
+            cout << "\nLength Extension Attack 验证成功!" << endl;
             cout << "   攻击者在不知道原始消息内容的情况下，" << endl;
             cout << "   成功计算出了扩展消息的哈希值。" << endl;
         }
@@ -436,34 +436,7 @@ public:
     }
     
     static void analyzeSecurityImplications() {
-        cout << "\n=== SM3 Length Extension Attack 安全影响分析 ===" << endl;
         
-        cout << "\n1. 攻击原理:" << endl;
-        cout << "   - SM3采用Merkle-Damgård结构" << endl;
-        cout << "   - 哈希计算是迭代的：H(m) = f(IV, m1) -> f(H1, m2) -> ..." << endl;
-        cout << "   - 最终哈希值实际上是最后一轮的内部状态" << endl;
-        cout << "   - 攻击者可以利用这个状态继续哈希计算" << endl;
-        
-        cout << "\n2. 攻击条件:" << endl;
-        cout << "   - 已知消息长度" << endl;
-        cout << "   - 已知消息哈希值" << endl;
-        cout << "   - 不需要知道消息内容" << endl;
-        
-        cout << "\n3. 实际威胁场景:" << endl;
-        cout << "   - MAC验证绕过: H(key||message) -> H(key||message||padding||evil_data)" << endl;
-        cout << "   - 身份验证绕过: H(token||data) -> H(token||data||padding||admin=true)" << endl;
-        cout << "   - 完整性校验绕过: 在不知道密钥的情况下伪造有效签名" << endl;
-        
-        cout << "\n4. 防御措施:" << endl;
-        cout << "   - 使用HMAC而不是简单的H(key||message)" << endl;
-        cout << "   - 采用更安全的哈希函数（如SHA-3/Keccak，使用海绵结构）" << endl;
-        cout << "   - 在消息中添加长度字段进行验证" << endl;
-        cout << "   - 使用专门的认证加密算法" << endl;
-        
-        cout << "\n5. SM3特有考虑:" << endl;
-        cout << "   - SM3作为中国密码标准，在国产化环境中广泛使用" << endl;
-        cout << "   - 在设计基于SM3的认证系统时必须考虑此攻击" << endl;
-        cout << "   - 建议配合SM4等对称加密算法使用" << endl;
     }
 };
 
