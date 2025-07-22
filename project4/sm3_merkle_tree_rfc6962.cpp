@@ -416,7 +416,7 @@ public:
         
         // 查找目标哈希的插入位置
         auto it = lower_bound(sortedLeaves.begin(), sortedLeaves.end(), 
-                             make_pair(targetHash, 0));
+                             make_pair(targetHash, (size_t)0));
         
         // 如果找到完全匹配，说明元素存在
         if (it != sortedLeaves.end() && it->first == targetHash) {
