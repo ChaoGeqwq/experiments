@@ -13,7 +13,12 @@
 
 **Linux 环境**: WSL2 Ubuntu 22.04.4 LTS  
 
-**处理器**: 12th Gen Intel(R) Core(TM) i7-12700H, ~2.7GHz  
+**处理器**: 
+- 型号: 12th Gen Intel(R) Core(TM) i7-12700H
+- 核心: 10物理核心，20逻辑线程
+- 频率: 2.688GHz
+- 缓存: L3 24MB, L2 12.5MB
+- 指令集: AVX2, AES-NI, SHA-NI
 
 ## 实验环境：
 
