@@ -11,9 +11,9 @@
 
 **主操作系统**: Windows 11  
 
-**Linux 环境**: WSL2 Ubuntu 22.04.4 LTS 
+**Linux 环境**: WSL2 Ubuntu 22.04.4 LTS  
 
-**处理器**: 11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz(16 CPUs), ~2.3GHz  
+**处理器**: 12th Gen Intel(R) Core(TM) i7-12700H, ~2.7GHz  
 
 ## 实验环境：
 
