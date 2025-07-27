@@ -10,7 +10,9 @@
 ## 电脑配置：
 
 **主操作系统**: Windows 11  
+
 **Linux 环境**: WSL2 Ubuntu 22.04.4 LTS 
+
 **处理器**: 11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz(16 CPUs), ~2.3GHz  
 
 ## 实验环境：
@@ -20,20 +22,20 @@
 <span style="font-size:1.3em; color:red"><b>每个完成的项目均在对应的文件夹里有相应的README介绍</b></span>
 
 ### Project1: SM4密码算法优化实现与数学分析
-**链接**: [project1/](./project1/)
+**链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project1/](https://github.com/ChaoGeqwq/experiments/tree/main/project1/)
 
 ### Project2: 图片水印嵌入和提取系统  
-**链接**: [project2/](./project2/)
+**链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project2/](https://github.com/ChaoGeqwq/experiments/tree/main/project2/)
 
 ### Project3: Poseidon2 零知识证明电路实现
-**链接**: [project3/](./project3/)
+**链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project3/](https://github.com/ChaoGeqwq/experiments/tree/main/project3/)
 
 ### Project4: SM3密码学算法项目
-**链接**: [project4/](./project4/)
+**链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project4/](https://github.com/ChaoGeqwq/experiments/tree/main/project4/)
 
 ### Project5: SM2 椭圆曲线算法优化实现
-**链接**: [project5/](./project5/)
+**链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project5/](https://github.com/ChaoGeqwq/experiments/tree/main/project5/)
 
 ### Project6: Google Password Checkup 隐私集合交集协议实现
-**链接**: [project6/](./project6/)
+**链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project6/](https://github.com/ChaoGeqwq/experiments/tree/main/project6/)
 
