@@ -24,7 +24,9 @@
 
 **开发环境**: Visual Studio Code  
 
-<span style="font-size:1.3em; color:red"><b>每个完成的项目均在对应的文件夹里有相应的README介绍</b></span>
+## 项目说明
+
+> **🔴 重要提示：每个完成的项目均在对应的文件夹里有相应的README介绍**
 
 ### Project1: SM4密码算法优化实现与数学分析
 **链接**: [https://github.com/ChaoGeqwq/experiments/tree/main/project1/](https://github.com/ChaoGeqwq/experiments/tree/main/project1/)
