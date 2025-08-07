@@ -155,3 +155,309 @@ make clean        # 清理编译文件
 
 **测试环境**: OpenSSL 3.0.2, GCC优化级别O2  
 
+
+---
+
+## SM2签名算法安全性分析与攻击演示
+
+### 概述
+
+本项目还包含了SM2签名算法的安全性分析和攻击演示代码，用于教育目的，帮助理解SM2签名算法的潜在威胁和防护措施。这些代码基于20250713-wen-sm2-public.pdf中提到的签名算法误用场景进行实现。
+
+### 文件结构
+
+```
+project5/
+├── sm2_signature_attack.h          # 签名攻击接口定义
+├── sm2_signature_attack.c          # 签名攻击实现
+├── sm2_signature_attack_demo.c     # 综合演示程序
+├── satoshi_forge_poc.c             # 中本聪签名伪造专用POC
+├── test_signature_attacks.c        # 自动化测试
+└── SM2_SIGNATURE_VULNERABILITIES_ANALYSIS.md  # 详细技术文档
+```
+
+### 实现的攻击类型
+
+#### 1. K值重用攻击 (K-Reuse Attack)
+
+**原理**: 当两个签名使用相同的随机数k时，可以通过数学运算恢复私钥。
+
+**数学推导**:
+假设有两个签名使用相同的k值：
+- 消息M₁的签名：(r₁, s₁)
+- 消息M₂的签名：(r₂, s₂)
+
+由于使用相同的k值，椭圆曲线点坐标x₁相同，因此：
+```
+r₁ = (e₁ + x₁) mod n
+r₂ = (e₂ + x₁) mod n
+```
+
+从签名公式：
+```
+s₁ = (1 + d)⁻¹ · (k - r₁·d) mod n
+s₂ = (1 + d)⁻¹ · (k - r₂·d) mod n
+```
+
+可以推导出：
+```
+k = (e₁ - e₂) / (s₁ - s₂) mod n
+d = (k·s₁ - e₁) / (r₁ + s₁) mod n
+```
+
+**POC验证代码**:
+```c
+int sm2_attack_k_reuse(const SM2_SIGNATURE *sig1, const SM2_SIGNATURE *sig2,
+                       const unsigned char *msg1_hash, const unsigned char *msg2_hash,
+                       SM2_ATTACK_RESULT *result);
+```
+
+#### 2. 弱K值攻击 (Weak K Attack)
+
+**原理**: 当k值可预测、过小或存在偏置时，攻击者可以通过暴力搜索恢复私钥。
+
+**攻击方法**:
+1. 枚举可能的弱k值（如1, 2, 3, 12345等）
+2. 对每个候选k，计算 (x₁, y₁) = k·G
+3. 验证 r = (e + x₁) mod n 是否与签名中的r匹配
+4. 如果匹配，使用公式恢复私钥：
+   ```
+   d = (k - s) / (s + r) mod n
+   ```
+
+**常见弱k值**:
+- 小整数：1, 2, 3, ...
+- 特定模式：0xDEADBEEF, 12345, 54321
+- 时间戳相关值
+- 伪随机数生成器状态可预测的值
+
+**POC验证代码**:
+```c
+int sm2_attack_weak_k(const SM2_SIGNATURE *signature,
+                      const unsigned char *message_hash,
+                      SM2_ATTACK_RESULT *result);
+```
+
+#### 3. 中本聪数字签名伪造攻击原理分析
+
+**背景**: 中本聪（Satoshi Nakamoto）是比特币的创造者，其数字签名使用ECDSA算法。虽然比特币使用的是secp256k1曲线而非SM2曲线，但签名伪造的原理是相似的。
+
+**理论分析**:
+
+**SM2 vs ECDSA比较**:
+| 特性 | Bitcoin ECDSA (secp256k1) | SM2 |
+|------|---------------------------|-----|
+| 曲线类型 | Koblitz曲线 | 素数域曲线 |
+| 参数 | a=0, b=7 | a=-3, b=特定值 |
+| 安全强度 | ~128位 | ~128位 |
+| 签名算法 | 基于ECDLP | 基于ECDLP |
+
+**伪造攻击策略**:
+
+1. **存在性伪造 (Existential Forgery)**:
+   - 目标：为任意消息生成有效签名
+   - 方法：随机选择(r,s)，反推消息
+   - 限制：无法为指定消息签名
+   - 成功概率：约1/n ≈ 2⁻²⁵⁶
+
+2. **选择性伪造 (Selective Forgery)**:
+   - 目标：为指定消息生成有效签名
+   - 方法：解决椭圆曲线离散对数问题(ECDLP)
+   - 复杂度：O(√n) ≈ O(2¹²⁸) 使用Pollard's rho算法
+   - 实际可行性：完全不可行
+
+3. **通用性伪造 (Universal Forgery)**:
+   - 目标：恢复私钥，为任意消息签名
+   - 方法：暴力搜索私钥空间
+   - 复杂度：O(n) ≈ O(2²⁵⁶)
+   - 实际可行性：完全不可行
+
+**数学复杂度分析**:
+
+椭圆曲线离散对数问题(ECDLP)：给定椭圆曲线上的点P和Q，找到整数k使得Q = k·P。
+
+最佳已知算法：
+- **Pollard's rho算法**: 时间复杂度O(√πn/2) ≈ O(2¹²⁷·⁸)
+- **量子算法威胁**: Shor算法可在多项式时间内求解，但需要约2330个逻辑量子比特
+
+**伪造失败的原因**:
+SM2签名验证需要满足：
+```
+(x₁, y₁) = s·G + t·PA
+R = (e + x₁) mod n
+R == r
+```
+
+要使伪造成功，需要找到(r,s)使得上述等式成立，这等价于解决ECDLP，在计算上是困难的。
+
+**POC验证代码**:
+```c
+int sm2_forge_satoshi_signature(const SATOSHI_FORGE_DATA *forge_data,
+                               SM2_ATTACK_RESULT *result);
+```
+
+**实际攻击向量**:
+虽然纯密码学攻击不可行，但实际攻击可能通过：
+1. **实现缺陷利用**: 随机数生成器缺陷、侧信道信息泄露
+2. **物理攻击**: 获取存储私钥的设备、硬件木马
+3. **社会工程学**: 身份冒充、钓鱼攻击
+
+### 编译和运行
+
+#### 编译攻击演示程序
+```bash
+make signature_attacks     # 编译所有签名攻击程序
+make clean_attacks        # 清理攻击程序
+```
+
+#### 运行演示
+
+1. **综合攻击演示**:
+```bash
+./sm2_signature_attack_demo
+# 交互式菜单，可选择：
+# 1. K值重用攻击
+# 2. 弱K值攻击  
+# 3. 中本聪签名伪造攻击
+# 4. 显示安全建议
+# 5. 运行所有攻击演示
+```
+
+2. **中本聪签名伪造专用POC**:
+```bash
+./satoshi_forge_poc
+# 专门的中本聪签名伪造详细分析
+```
+
+3. **自动化测试**:
+```bash
+./test_signature_attacks
+# 自动运行所有攻击测试并显示结果
+```
+
+4. **快速演示**:
+```bash
+make run_attacks          # 自动运行所有攻击演示
+```
+
+### 攻击复杂度分析
+
+| 攻击类型 | 时间复杂度 | 实际可行性 | 成功条件 |
+|----------|------------|------------|----------|
+| k值重用 | O(1) | 高 | 存在k值重用 |
+| 弱k值 | O(k) | 中等 | k值在弱值集合中 |
+| 随机伪造 | O(2²⁵⁶) | 不可行 | 无实际限制 |
+| 量子攻击 | O((log n)³) | 未来威胁 | 需要大型量子计算机 |
+
+**时间需求估算**:
+- k值重用攻击：毫秒级
+- 弱k值攻击(10⁶空间)：分钟级  
+- 随机伪造：10³⁰年级（宇宙年龄：10¹⁰年）
+
+### 防护建议
+
+#### 1. 随机数生成安全
+- 使用密码学安全的PRNG（如HMAC_DRBG）
+- 确保k值具有足够的熵(256位)
+- 绝不重用k值
+- 考虑使用确定性随机数(RFC 6979)
+
+#### 2. 实现安全
+- 使用经过验证的密码学库
+- 实现常数时间算法
+- 防护侧信道攻击
+- 使用盲化技术
+
+#### 3. 密钥管理
+- 安全生成和存储私钥
+- 使用硬件安全模块(HSM)
+- 定期轮换密钥
+- 实施密钥备份和恢复策略
+
+#### 4. 监控和检测
+- 实施签名操作审计
+- 检测异常签名模式
+- 监控k值重用
+- 定期安全评估
+
+### 安全示例代码
+
+#### 安全的k值生成
+```c
+// 使用HMAC-DRBG生成安全的k值
+int generate_secure_k(BIGNUM *k, const BIGNUM *private_key, 
+                      const unsigned char *message_hash, 
+                      const BIGNUM *order) {
+    // 实现基于RFC 6979的确定性k值生成
+    // k = HMAC_DRBG(private_key || message_hash)
+    return hmac_drbg_generate(k, private_key, message_hash, order);
+}
+```
+
+#### k值质量检测
+```c
+// 检测k值质量
+int validate_k_quality(const BIGNUM *k, const BIGNUM *order) {
+    // 检查k不为0或1
+    if (BN_is_zero(k) || BN_is_one(k)) return 0;
+    
+    // 检查k < n-1
+    BIGNUM *n_minus_1 = BN_dup(order);
+    BN_sub_word(n_minus_1, 1);
+    int valid = (BN_cmp(k, n_minus_1) < 0);
+    BN_free(n_minus_1);
+    
+    return valid;
+}
+```
+
+#### 签名模式检测
+```c
+// 检测可能的k值重用
+typedef struct {
+    unsigned char r_prefix[4];  // r值前缀
+    time_t timestamp;          // 签名时间
+    int count;                 // 计数
+} signature_pattern_t;
+
+int detect_k_reuse(signature_pattern_t *patterns, int pattern_count) {
+    for (int i = 0; i < pattern_count - 1; i++) {
+        for (int j = i + 1; j < pattern_count; j++) {
+            if (memcmp(patterns[i].r_prefix, patterns[j].r_prefix, 4) == 0) {
+                // 可能的k值重用
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+```
+
+### 教育价值
+
+这个攻击演示项目的教育价值在于：
+
+1. **理解威胁**: 了解SM2签名可能面临的实际威胁
+2. **防护意识**: 认识到安全实现的重要性
+3. **实践学习**: 通过代码理解攻击原理
+4. **安全编程**: 学习如何安全地实现密码学算法
+
+### 法律和伦理声明
+
+⚠️ **重要声明**:
+- 本代码仅用于教育和研究目的
+- 不得用于任何恶意或非法活动
+- 使用者应遵守相关法律法规
+- 作者不承担任何滥用责任
+
+### 总结
+
+SM2签名算法在正确实现的情况下是密码学安全的。主要威胁来自实现缺陷（如随机数重用、弱随机数）和系统安全问题。通过理解这些攻击原理，开发者可以避免常见错误，采用安全的编程实践。
+
+我们的POC验证代码证明了：
+- k值重用攻击的有效性和危险性
+- 弱k值的安全风险
+- 选择性签名伪造的数学困难性
+- 中本聪签名伪造在计算上的不可行性
+
+**记住**: 了解攻击方法是为了更好地防护！
