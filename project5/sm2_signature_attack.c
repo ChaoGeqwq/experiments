@@ -934,29 +934,5 @@ void demonstrate_weak_k_attack(void) {
 
 // 打印安全建议
 void print_security_recommendations(void) {
-    printf("\n=== SM2签名安全建议 ===\n");
-    printf("1. 随机数生成:\n");
-    printf("   - 始终使用密码学安全的随机数生成器\n");
-    printf("   - 确保k值具有足够的熵\n");
-    printf("   - 绝不重用k值\n\n");
-    
-    printf("2. 实现安全:\n");
-    printf("   - 使用经过验证的密码学库\n");
-    printf("   - 避免自制密码学实现\n");
-    printf("   - 定期更新密码学库\n\n");
-    
-    printf("3. 侧信道防护:\n");
-    printf("   - 实现时间常数算法\n");
-    printf("   - 防护功耗分析攻击\n");
-    printf("   - 使用盲化技术\n\n");
-    
-    printf("4. 密钥管理:\n");
-    printf("   - 安全生成和存储私钥\n");
-    printf("   - 定期轮换密钥\n");
-    printf("   - 实施密钥备份和恢复策略\n\n");
-    
-    printf("5. 签名验证:\n");
-    printf("   - 始终验证签名格式\n");
-    printf("   - 检查参数范围\n");
-    printf("   - 使用安全的哈希函数\n\n");
+   
 }
