@@ -273,7 +273,7 @@ witnesses/
 export LOG_LEVEL=DEBUG
 
 # 运行测试
-python3 poseidon2_test.py
+python poseidon2_test.py
 ```
 
 ##  参考资料
@@ -285,7 +285,7 @@ python3 poseidon2_test.py
 5. [ZK-SNARKs 入门](https://zkp.science/)
 
 
-##  致谢
+##  参考开源项目
 
 感谢以下开源项目：
 
