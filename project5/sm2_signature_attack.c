@@ -398,8 +398,10 @@ int sm2_attack_k_reuse(const SM2_SIGNATURE *sig1, const SM2_SIGNATURE *sig2,
     // 输出恢复的私钥
     BN_bn2binpad(d, result->recovered_private_key, 32);
     
+    struct timeval end;
+    gettimeofday(&end, NULL);
     result->success = 1;
-    result->attack_time = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+    result->attack_time = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
     strcpy(result->description, "K-reuse attack successful! Private key recovered.");
     ret = 1;
     
@@ -423,7 +425,7 @@ int sm2_forge_satoshi_signature(const SATOSHI_FORGE_DATA *forge_data,
     BIGNUM *px = NULL, *py = NULL, *x1 = NULL;
     const BIGNUM *order = NULL;
     int ret = 0;
-    struct timeval start;
+    struct timeval start, end;
     unsigned char hash[32];
     
     if (!forge_data || !result) return -1;
@@ -485,7 +487,8 @@ int sm2_forge_satoshi_signature(const SATOSHI_FORGE_DATA *forge_data,
             BN_bn2binpad(s, result->forged_signature.s, 32);
             
             result->success = 0;  // 设为0因为这不是真正的成功伪造
-            result->attack_time = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            gettimeofday(&end, NULL);
+            result->attack_time = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
             sprintf(result->description, 
                 "伪造尝试完成。注意：这不是真正的签名伪造，仅用于演示攻击概念。真正伪造Satoshi签名在计算上是不可行的。尝试次数: %d", attempt + 1);
             ret = 1;
@@ -587,7 +590,9 @@ int sm2_attack_weak_k(const SM2_SIGNATURE *signature,
             BN_bn2binpad(d, result->recovered_private_key, 32);
             
             result->success = 1;
-            result->attack_time = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            struct timeval end;
+            gettimeofday(&end, NULL);
+            result->attack_time = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
             sprintf(result->description, "Weak k attack successful! Found k = %d, private key recovered.", weak_k_values[i]);
             ret = 1;
             
