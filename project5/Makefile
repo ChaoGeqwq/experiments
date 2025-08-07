@@ -35,3 +35,30 @@ help:
 	@echo "  clean      - 清理编译文件"
 
 .PHONY: all test test-basic clean help
+
+# SM2签名攻击相关程序
+sm2_signature_attack_demo: sm2_signature_attack.c sm2_signature_attack_demo.c
+$(CC) $(CFLAGS) -o sm2_signature_attack_demo sm2_signature_attack.c sm2_signature_attack_demo.c $(LDFLAGS)
+
+satoshi_forge_poc: sm2_signature_attack.c satoshi_forge_poc.c
+$(CC) $(CFLAGS) -o satoshi_forge_poc sm2_signature_attack.c satoshi_forge_poc.c $(LDFLAGS)
+
+test_signature_attacks: sm2_signature_attack.c test_signature_attacks.c
+$(CC) $(CFLAGS) -o test_signature_attacks sm2_signature_attack.c test_signature_attacks.c $(LDFLAGS)
+
+# 编译所有签名攻击程序
+signature_attacks: sm2_signature_attack_demo satoshi_forge_poc test_signature_attacks
+
+# 清理签名攻击程序
+clean_attacks:
+rm -f sm2_signature_attack_demo satoshi_forge_poc test_signature_attacks
+
+# 运行所有签名攻击演示
+run_attacks: signature_attacks
+@echo "运行签名攻击演示..."
+./test_signature_attacks
+@echo ""
+@echo "运行中本聪签名伪造POC..."
+echo "1" | ./satoshi_forge_poc
+
+.PHONY: signature_attacks clean_attacks run_attacks
